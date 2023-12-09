@@ -10,7 +10,7 @@ python3 main.py < in
 # 16:10:27
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 import re
 from collections import namedtuple

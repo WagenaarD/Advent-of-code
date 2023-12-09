@@ -7,7 +7,7 @@ python3 main.py < in
 # forgot
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 import re
 

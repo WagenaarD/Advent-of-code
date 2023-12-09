@@ -11,7 +11,7 @@ python3 main.py < in
 AOC_ANSWER = (1702218515, 925)
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 
 @print_function()

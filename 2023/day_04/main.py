@@ -10,7 +10,7 @@ python3 main.py < in
 # 08:13:14  13:40   07:08
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 
 AOC_ANSWER = (21485, 11024379)

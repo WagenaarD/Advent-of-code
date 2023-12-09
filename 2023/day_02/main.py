@@ -9,7 +9,7 @@ python3 main.py < in
 # 10:22:06 (leaderboard filled in 06:15)
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 import math
 

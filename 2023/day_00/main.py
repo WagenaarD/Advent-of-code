@@ -8,7 +8,7 @@ python3 main.py < in
 AOC_ANSWER = (None, None)
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import *
 import itertools as it
 from dataclasses import dataclass, field
