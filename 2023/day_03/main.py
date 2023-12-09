@@ -9,42 +9,43 @@ python3 main.py < in
 # 09:47:59  21:41
 
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 from aoc_tools import print_function
 import re
 import math
+from time import time
+from collections import namedtuple
 
 AOC_ANSWER = (557705, 84266818)
-            
+ADJACENT = tuple((r, c) for r in range(-1, 2) for c in range(-1, 2) if (r, c) != (0,0))
+NON_SYMBOLS = '1234567890.'
+
 @print_function()
 def main(input: 'str'):
-    # Make lists of all digits, gears and symbols. Digits include a list of all bounding box coords
-    digits = []
-    gears = []
-    symbols = []
-    for r, line in enumerate(input.split('\n')):
-        for c, char in enumerate(line):
-            if char == '*':
-                gears.append((r, c))
-            if char not in '1234567890.':
-                symbols.append((r, c))
-        for re_match in re.finditer('\d+', line):
-            value_str = re_match.group()
-            c = re_match.start()
-            value = int(value_str)
-            digits.append((value, [(r + rr, c + cc) for rr in (-1,0,1) for cc in range(-1,1+len(value_str))]))
-    # Scoring
+    lines = input.split('\n')
+    nrows, ncols = len(lines), len(lines[0])
     score_p1 = 0
-    for dig in digits:
-        adjacent = [sym for sym in symbols if sym in dig[1]]
-        if adjacent:
-            score_p1 += dig[0]
     score_p2 = 0
-    for gear in gears:
-        adjacent_digits = [dig[0] for dig in digits if gear in dig[1]]
-        if len(adjacent_digits) == 2:
-            score_p2 += math.prod(adjacent_digits)
-
+    for r, line in enumerate(lines):
+        for c, char in enumerate(line):
+            if char in NON_SYMBOLS:
+                continue
+            # Find coordinates of the start of adjacent numbers
+            num_coords = set()
+            for rr, cc in ADJACENT:
+                if not (0 <= r + rr < nrows and 0 <=  c + cc < ncols):
+                    continue
+                if not lines[r + rr][c + cc].isdigit():
+                    continue
+                while (c + cc) > 0 and lines[r + rr][c + cc - 1].isdigit():
+                    cc -= 1
+                num_coords.add((r + rr, c + cc))
+            
+            # Find nums
+            nums = [int(re.match('\d+', lines[nr][nc:]).group()) for nr, nc in num_coords]
+            score_p1 += sum(nums)
+            if char == '*' and len(nums) == 2:
+                score_p2 += math.prod(nums)
     return (score_p1, score_p2)
 
 
