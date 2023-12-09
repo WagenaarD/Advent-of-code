@@ -32,7 +32,7 @@ def run_all(aoc_year_path = '../2023'):
     print(f'Total time: {total_time_s}s')
 
 
-
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
-    run_all()
+    script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-2]) + '/' + sys.argv[1]
+    run_all(script_path)
