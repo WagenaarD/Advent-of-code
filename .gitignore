@@ -2,3 +2,4 @@
 **/.*
 **/in
 *aoc_session_cookie*
+!.gitignore
