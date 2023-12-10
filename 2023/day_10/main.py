@@ -25,15 +25,16 @@ from aoc_tools import print_function
 # - S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't 
 # show what shape the pipe has.
 
-ADJACENT = {
-    '|': (( 1,  0), (-1,  0)),
-    '-': (( 0, -1), ( 0,  1)),
-    'L': ((-1,  0), ( 0,  1)),
-    'J': ((-1,  0), ( 0, -1)),
-    '7': (( 1,  0), ( 0, -1)),
-    'F': (( 1,  0), ( 0,  1)),
-    '.': (),
+PIPES = {
+    '|': {( 1,  0), (-1,  0)},
+    '-': {( 0, -1), ( 0,  1)},
+    'L': {(-1,  0), ( 0,  1)},
+    'J': {(-1,  0), ( 0, -1)},
+    '7': {( 1,  0), ( 0, -1)},
+    'F': {( 1,  0), ( 0,  1)},
+    '.': set(),
 }
+PRIMARY_AXIS_ADJACENT = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
 @print_function()
 def main(input: str) -> int:
@@ -44,14 +45,15 @@ def main(input: str) -> int:
     # Looks at neighbours of S and lists which feed into S. From these the sign is chosen. In the 
     # end we overwrite the S value in the input with the correct pipe.
     r, c = s_pos
-    connected = []
-    for rr, cc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        if not (0 <= r + rr < len(lines) and 0 <= c + cc <= len(lines[0])):
+    s_dirs = set()
+    for rr, cc in PRIMARY_AXIS_ADJACENT:
+        if not (0 <= r+rr < len(lines) and 0 <= c+cc <= len(lines[0])):
             continue
-        if (-rr, -cc) in ADJACENT[lines[r+rr][c+cc]]:
-            connected.append((rr, cc))
-    s_sign = [key for key, val in ADJACENT.items() if all([dir in connected for dir in val])][0]
-    lines[s_pos[0]] = lines[s_pos[0]][:s_pos[1]] + s_sign + lines[s_pos[0]][s_pos[1]+1:]
+        if (-rr, -cc) in PIPES[lines[r+rr][c+cc]]:
+            s_dirs.add((rr, cc))
+    s_pipe = [pipe for pipe, pipe_dirs in PIPES.items() if pipe_dirs == s_dirs][0]
+    lines[s_pos[0]] = lines[s_pos[0]].replace('S', s_pipe)
+    
 
     # Find all nodes, only look forward. We know the pipline will never hit a dead end or split.
     nodes = {s_pos}
@@ -61,7 +63,7 @@ def main(input: str) -> int:
         new_ends, ends = [], new_ends.copy()
         for r, c in ends:
             char = lines[r][c]
-            for rr, cc in ADJACENT[char]:
+            for rr, cc in PIPES[char]:
                 if (r+rr, c+cc) in nodes:
                     continue
                 nodes.add((r+rr, c+cc))
@@ -71,6 +73,8 @@ def main(input: str) -> int:
     # Enclosure can be found by looking from anypoint outside the grid and count how ofter you have 
     # crossed a pipe. (I remembered this from determining whether dose voxels are inside a region of
     # interest using DICOM RTDose and RTSS files.)
+    # Using I, F 7 works, but I, J, L would work also. The idea is that the inside variable should 
+    # flip for a I and a FJ or L7 combination but not a F7 or LJ combination.
     enclosed = []
     score_p2 = 0
     for r, row in enumerate(lines):
