@@ -1,0 +1,101 @@
+"""
+Advent of code challenge 2023
+python3 ../../aoc_tools/get_aoc_in.py
+python3 main.py < in
+"""
+# Start, Part 1, Part 2
+# 12:34:10
+# 12:58:00
+# 13:23:32
+
+AOC_ANSWER = (6613, 511)
+
+
+import sys
+sys.path.append('../..')
+from aoc_tools import *
+import itertools as it
+from dataclasses import dataclass, field
+from collections import defaultdict
+import re
+import numpy as np
+from pprint import pprint
+from functools import cache
+import math
+
+# The pipes are arranged in a two-dimensional grid of tiles:
+# - | is a vertical pipe connecting north and south.
+# - - is a horizontal pipe connecting east and west.
+# - L is a 90-degree bend connecting north and east.
+# - J is a 90-degree bend connecting north and west.
+# - 7 is a 90-degree bend connecting south and west.
+# - F is a 90-degree bend connecting south and east.
+# - . is ground; there is no pipe in this tile.
+# - S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
+
+ADJACENT = {
+    '|': (( 1,  0), (-1,  0)),
+    '-': (( 0, -1), ( 0,  1)),
+    'L': ((-1,  0), ( 0,  1)),
+    'J': ((-1,  0), ( 0, -1)),
+    '7': (( 1,  0), ( 0, -1)),
+    'F': (( 1,  0), ( 0,  1)),
+    '.': (),
+}
+
+
+@print_function()
+def main(input: str) -> int:
+    lines = input.split('\n')
+    s_pos = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == 'S'][0]
+    
+    # Find sign of S. Can be done quickly manually, but easier when running both examples and input
+    # Looks at neighbours of S and lists which feed into S. From these the sign is chosen.
+    r, c = s_pos
+    connected = []
+    for rr, cc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        if not (0 <= r + rr < len(lines) and 0 <= c + cc <= len(lines[0])):
+            continue
+        if (-rr, -cc) in ADJACENT[lines[r+rr][c+cc]]:
+            connected.append((rr, cc))
+    s_sign = [key for key, val in ADJACENT.items() if all([dir in connected for dir in val])][0]
+    # Overwrite the S value in the input with the correct pipe
+    lines[s_pos[0]] = lines[s_pos[0]][:s_pos[1]] + s_sign + lines[s_pos[0]][s_pos[1]+1:]
+
+    # Find all nodes, only look forward. We know the pipline will never hit a dead end or split.
+    nodes = {s_pos}
+    new_ends = [s_pos]
+    score_p1 = -1
+    while new_ends:
+        new_ends, ends = [], new_ends.copy()
+        for r, c in ends:
+            char = lines[r][c]
+            for rr, cc in ADJACENT[char]:
+                if (r+rr, c+cc) in nodes:
+                    continue
+                nodes.add((r+rr, c+cc))
+                new_ends.append((r+rr, c+cc))
+        score_p1 += 1
+    
+    # Enclosure can be found by looking from anypoint outside the grid and count how ofter you have 
+    # crossed a pipe. (I remembered this from determining whether dose voxels are inside a region of
+    # interest using DICOM RTDose and RTSS files.)
+    enclosed = []
+    score_p2 = 0
+    for r, row in enumerate(lines):
+        inside = False
+        for c, char in enumerate(row):
+            if (r, c) in nodes and char in ('|', 'F', '7'):
+                inside = not inside
+            if inside and not (r, c) in nodes:
+                enclosed.append((r, c))
+                score_p2 += 1
+
+    return (score_p1, score_p2)
+
+if __name__ == '__main__':
+    """Executed if file is executed but not if file is imported."""
+    input = sys.stdin.read().strip()
+    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+
+
