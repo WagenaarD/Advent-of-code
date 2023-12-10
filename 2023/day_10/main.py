@@ -10,18 +10,9 @@ python3 main.py < in
 
 AOC_ANSWER = (6613, 511)
 
-
 import sys
 sys.path.append('../..')
-from aoc_tools import *
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
+from aoc_tools import print_function
 
 # The pipes are arranged in a two-dimensional grid of tiles:
 # - | is a vertical pipe connecting north and south.
@@ -31,7 +22,8 @@ import math
 # - 7 is a 90-degree bend connecting south and west.
 # - F is a 90-degree bend connecting south and east.
 # - . is ground; there is no pipe in this tile.
-# - S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
+# - S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't 
+# show what shape the pipe has.
 
 ADJACENT = {
     '|': (( 1,  0), (-1,  0)),
@@ -43,14 +35,14 @@ ADJACENT = {
     '.': (),
 }
 
-
 @print_function()
 def main(input: str) -> int:
     lines = input.split('\n')
     s_pos = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == 'S'][0]
     
     # Find sign of S. Can be done quickly manually, but easier when running both examples and input
-    # Looks at neighbours of S and lists which feed into S. From these the sign is chosen.
+    # Looks at neighbours of S and lists which feed into S. From these the sign is chosen. In the 
+    # end we overwrite the S value in the input with the correct pipe.
     r, c = s_pos
     connected = []
     for rr, cc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
@@ -59,7 +51,6 @@ def main(input: str) -> int:
         if (-rr, -cc) in ADJACENT[lines[r+rr][c+cc]]:
             connected.append((rr, cc))
     s_sign = [key for key, val in ADJACENT.items() if all([dir in connected for dir in val])][0]
-    # Overwrite the S value in the input with the correct pipe
     lines[s_pos[0]] = lines[s_pos[0]][:s_pos[1]] + s_sign + lines[s_pos[0]][s_pos[1]+1:]
 
     # Find all nodes, only look forward. We know the pipline will never hit a dead end or split.
