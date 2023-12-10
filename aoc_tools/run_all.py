@@ -12,7 +12,7 @@ def run_all(aoc_year_path: str = '../2023', repeats: int = 1) -> int:
     sys.path.insert(0, aoc_year_path)
     t0 = datetime.datetime.now()
     for day_name in sorted(os.listdir(aoc_year_path)):
-        if not day_name.startswith('day_') or day_name.endswith('0'):
+        if not day_name.startswith('day_') or day_name.endswith('00'):
             continue
         with open(f'{aoc_year_path}/{day_name}/in') as f:
             input = f.read().strip()
@@ -32,8 +32,13 @@ def run_all(aoc_year_path: str = '../2023', repeats: int = 1) -> int:
         else:
             correct = f'INCORRECT, was {out.ans} but was {out.solution}'
         time_pc = out.time_s / total_time_s
-        time_pc_sd = out.time_sd / total_time_s
-        print(f' - {out.day} took {out.time_s:.4f}s ± {out.time_sd:.4f} ({time_pc:5.1%} ± {time_pc_sd:5.1%}) - {correct}')
+        if out.time_sd == None:
+            time_sd = ''
+            time_pc_sd = ''
+        else:
+            time_sd = f' ± {out.time_sd:.4f}'
+            time_pc_sd = f' ± {out.time_sd / total_time_s:5.1%}'
+        print(f' - {out.day} took {out.time_s:.4f}s{time_sd} ({time_pc:5.1%}{time_pc_sd}) - {correct}')
     print(f'Total time: {total_time_s}s')
     return total_time_s
 
