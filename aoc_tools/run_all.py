@@ -25,7 +25,7 @@ def run_all(aoc_year_path: str = '../2023', repeats: int = 1) -> int:
         time_sd = numpy.std(time_s) / math.sqrt(repeats - 1) if repeats > 1 else None
         output.append(Output(day_name, sum(time_s) / repeats, time_sd, ans, code.AOC_ANSWER))
     total_time_s = sum([out.time_s for out in output])
-    print(f'Test results for {aoc_year_path}:')
+    print(f'Speed results {repeats} repeats of all puzzles in {aoc_year_path}:')
     for out in output:
         if out.ans == out.solution:
             correct = 'Answer correct'

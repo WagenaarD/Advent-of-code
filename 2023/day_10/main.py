@@ -41,7 +41,7 @@ def main(input: str) -> int:
     lines = input.split('\n')
     s_pos = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == 'S'][0]
     
-    # Find sign of S. Can be done quickly manually, but easier when running both examples and input
+    # Find pipe of S. Can be done quickly manually, but easier when running both examples and input
     # Looks at neighbours of S and lists which feed into S. From these the sign is chosen. In the 
     # end we overwrite the S value in the input with the correct pipe.
     r, c = s_pos
@@ -60,7 +60,7 @@ def main(input: str) -> int:
     new_ends = [s_pos]
     score_p1 = -1
     while new_ends:
-        new_ends, ends = [], new_ends.copy()
+        new_ends, ends = [], new_ends
         for r, c in ends:
             char = lines[r][c]
             for rr, cc in PIPES[char]:
@@ -75,15 +75,13 @@ def main(input: str) -> int:
     # interest using DICOM RTDose and RTSS files.)
     # Using I, F 7 works, but I, J, L would work also. The idea is that the inside variable should 
     # flip for a I and a FJ or L7 combination but not a F7 or LJ combination.
-    enclosed = []
     score_p2 = 0
     for r, row in enumerate(lines):
         inside = False
         for c, char in enumerate(row):
-            if (r, c) in nodes and char in ('|', 'F', '7'):
+            if (r, c) in nodes and char in '|F7':
                 inside = not inside
             if inside and not (r, c) in nodes:
-                enclosed.append((r, c))
                 score_p2 += 1
 
     return (score_p1, score_p2)
