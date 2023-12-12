@@ -21,15 +21,16 @@ import math
 
 
 @print_function()
-def part_one(lines):
-    pass
+def main(input: str) -> int:
+    lines = input.split('\n')
+
+
+
+
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     input = sys.stdin.read().strip()
-    lines = sys.stdin.read().strip().split('\n')
-    part_one(lines)
-
-    # print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
 
 
