@@ -4,8 +4,10 @@ python3 ../../aoc_tools/get_aoc_in.py
 python3 main.py < in
 """
 # Start, Part 1, Part 2
+# 06:01:30
+# 06:53:43
 
-AOC_ANSWER = (None, None)
+AOC_ANSWER = (34772, 35554)
 
 import sys
 sys.path.append('../..')
@@ -25,86 +27,93 @@ import math
 # the second pattern's horizontal line has 4 rows above it, a total of 405.
 
 
-@print_function()
-def f(b):    
-    
+
+def find_horizontals(b: str, factor = 1) -> 'list[int]':
+    """
+    Finds all horizontal mirror lines
+    """    
+    b = b.split('\n')
+    out = []
     for idx in range(1, len(b)):
         up = list(reversed(b[:idx]))
         down = b[idx:]
         sz = min(len(up), len(down))
         valid = ''.join(up[:sz]) == ''.join(down[:sz])
-        
-        # print('')
-        # print(idx, valid)
-        # print('\n'.join(up))
-        # print('============')
-        # print('\n'.join(down))
-        # if idx == 3:
-        #     print(''.join(up[:sz]))
-        #     print(''.join(down[:sz]))
-        #     print(valid)
-        #     exit()
-
-        
         if valid:
-            print('\nSymmetry found')
-            for line_idx, line in enumerate(b, 1):
-                if line_idx == idx:
-                    print('-' * (len(line)+6))
-                    print(f'{line_idx:3} {line}')
-                else:
-                    print(f'{line_idx:3} {line}')
-            return idx
-    return 0
+            out.append(idx)
+    return out
 
 
 def transpose_block(b: str) -> str:
-    """Transposes B"""
-    b = [list(r) for r in b]
-    bt = [[''] * len(b) for idx in range(len(b[0]))]
-    # print('b', len(b), len(b[0]))
-    # print('bt', len(bt), len(bt[0]))
-    
+    """
+    Transposes the block. 
+    """
+    b = [list(r) for r in b.split('\n')]
+    bt = [[''] * len(b) for idx in range(len(b[0]))]    
     for r, row in enumerate(b):
         for c, char in enumerate(row):
             bt[c][r] = char
-    return [''.join(row) for row in bt]
+    return '\n'.join([''.join(row) for row in bt])
+
+
+def block_scores(b: str) -> 'list[int]':
+    """
+    Returns a list of possible scores for various horizontal and vertical lines.
+    """
+    return [num * 100 for num in find_horizontals(b)] + find_horizontals(transpose_block(b))
+
+
+def print_block_line(b, idx = -1, transpose = False):
+    """
+    Only serves visualization purposes
+    """
+    if transpose:
+        b = transpose_block(b)
+    for line_idx, line in enumerate(b.split('\n'), 1):
+        if line_idx == idx:
+            print(f'{line_idx:3} {line}')
+            print('-' * (len(line)+6))
+        else:
+            print(f'{line_idx:3} {line}')
 
 @print_function()
-def main(input: str) -> int:
+def part_one(input: str) -> int:
+    return sum(sum(block_scores(b)) for b in input.split('\n\n'))
+
+
+@print_function()
+def part_two(input: str) -> int:
     bs = input.split('\n\n')
-    
     ans = 0
-    for b in bs:
-        b = b.split('\n')
-        bt = transpose_block(b)
-        ans += f(bt)
-        ans += 100*f(b)
+    for b_idx, b in enumerate(bs):
+        base_scores = block_scores(b)
+        # print(f'\n{b_idx}: Start')
+        # print_block_line(b)
+        # print('')
+        print_block_line(b, -1, True)
+        for idx, char in enumerate(b):
+            if char == '\n':
+                continue
+            new_char = '#' if char == '.' else '.'
+            new_b = b[:idx] + new_char + b[idx+1:]
+            new_scores = [score for score in block_scores(new_b) if score not in base_scores]
+            if new_scores:
+                assert len(new_scores) == 1, 'Len should be one'
+                # if new_scores[0] % 100 == 0:
+                #     print(f'\n{b_idx}: {new_scores[0]} - Horizontal line')
+                #     print_block_line(new_b, new_scores[0] // 100, True)
+                # else:
+                #     print(f'\n{b_idx}: {new_scores[0]} - Vertical line')
+                #     print_block_line(new_b, new_scores[0])
+                ans += sum(new_scores)
+                break
+        else:
+            assert False, f'No solution for {b_idx}'
     return ans
-    # b1, b2 = bs
-    # b1 = b1.split('\n')
-    # b2 = b2.split('\n')
-    # # b1_trans = []
-    # # for c in range(len(b1[0])):
-    # #     b1_trans.append([])
-    # #     for r in range(len(b1)):
-    # #         b1_trans[c].append(b1[r][c])
-    # # b1_trans = [''.join(row) for row in b1_trans]
-    # b1_trans = transpose_block(b1)
-    # print('\n'.join(b1))
-    # print('')
-    # print('\n'.join(b1_trans))
-    # ans += f(b1_trans) * 100 + f(b2)
 
 
-
-    # return ans
-
-
-
-
-
-
+def main(input: str) -> 'tuple(int, int)':
+    return (part_one(input), part_two(input))
 
 
 if __name__ == '__main__':
