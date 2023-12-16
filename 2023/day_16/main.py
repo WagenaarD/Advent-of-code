@@ -20,9 +20,10 @@ DIRS = {
     '^': (-1,  0),
     'v': ( 1,  0),
 }
+REVERSED_DIRS = {v: k for k, v in DIRS.items()}
 
 
-def solve(grid, beam):
+def solve(grid: list[str], beam: tuple[int, int, str]) -> int:
     new_beams = [beam]
     seen_states = set()
     while new_beams:
@@ -50,36 +51,20 @@ def solve(grid, beam):
                 else:
                     new_beams.append((rr, cc, dir))
             elif char == '/':
-                if dir == '>':
-                    new_beams.append((rr, cc, '^'))
-                elif dir == '^':
-                    new_beams.append((rr, cc, '>'))
-                if dir == '<':
-                    new_beams.append((rr, cc, 'v'))
-                elif dir == 'v':
-                    new_beams.append((rr, cc, '<'))
+                new_beams.append((rr, cc, REVERSED_DIRS[(-dc, -dr)]))
             elif char == '\\':
-                if dir == '>':
-                    new_beams.append((rr, cc, 'v'))
-                elif dir == 'v':
-                    new_beams.append((rr, cc, '>'))
-                if dir == '<':
-                    new_beams.append((rr, cc, '^'))
-                elif dir == '^':
-                    new_beams.append((rr, cc, '<'))
+                new_beams.append((rr, cc, REVERSED_DIRS[(dc, dr)]))
             else:
-                assert False, 'Unhandled char'
+                assert False, f'Unhandled char {char}'
         new_beams = [beam for beam in new_beams if not beam in seen_states]
         for beam in new_beams:
             seen_states.add(beam)
-    
     seen_pos = set([(r, c) for r, c, _ in seen_states])
-
     return len(seen_pos)
 
 
 @print_function()
-def part_one(grid: 'list[str]') -> int:
+def part_one(grid: list[str]) -> int:
     beam = (0,-1,'>')
     return solve(grid, beam)
 
