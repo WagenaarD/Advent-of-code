@@ -9,7 +9,7 @@ AOC_ANSWER = (None, None)
 
 import sys
 sys.path.append('../..')
-from aoc_tools import *
+from aoc_tools import print_function
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict
@@ -21,16 +21,26 @@ import math
 
 
 @print_function()
-def main(input: str) -> int:
+def part_one(input: str) -> int:
     lines = input.split('\n')
 
 
 
 
 
+
+
+@print_function()
+def part_two(input: str) -> int:
+    lines = input.split('\n')
+# @print_function()
+# def main(input: str) -> tuple[int, int]:
+#     return (part_one(input), part_two(input))
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+    print(part_one(input) == AOC_ANSWER[0])
+    print(part_two(input) == AOC_ANSWER[1])
+    # print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
 
 

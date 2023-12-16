@@ -15,7 +15,7 @@ import math
 
 AOC_ANSWER = (140220, 39570184)
 
-def part_one(lines):
+def part_one(lines: list[str]) -> int:
     times = map(int, lines[0].split()[1:])
     dists = map(int, lines[1].split()[1:])
     ans = 1
@@ -30,7 +30,7 @@ def part_one(lines):
         ans *= solutions
     return ans
 
-def part_two(lines):
+def part_two(lines: list[str]) -> int:
     record_time = int(''.join(lines[0].split()[1:]))
     record_dist = int(''.join(lines[1].split()[1:]))
     # new_dist = speed * time_left
@@ -49,7 +49,7 @@ def part_two(lines):
     ans = math.floor(range_end) - math.ceil(range_start)
     return ans
 
-def part_two_brute_1(lines):
+def part_two_brute_1(lines: list[str]) -> int:
     time = int(''.join(lines[0].split()[1:]))
     dist = int(''.join(lines[1].split()[1:]))
     ans = 0
@@ -59,7 +59,7 @@ def part_two_brute_1(lines):
 
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))
 

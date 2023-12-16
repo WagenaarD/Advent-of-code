@@ -15,7 +15,7 @@ sys.path.append('../..')
 from aoc_tools import print_function
 
 @print_function()
-def main(input: str, factor: int = 1_000_000) -> 'tuple(int, int)':
+def main(input: str, factor: int = 1_000_000) -> tuple[int, int]:
     lines = input.split('\n')
     galaxies = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == '#']
     # Sum the Manhattan distance between each galaxy pair

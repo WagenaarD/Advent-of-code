@@ -17,7 +17,7 @@ from functools import cache
 import itertools as it
 
 @cache
-def possible_solutions(bprint: str, score: 'tuple[int]') -> int:
+def possible_solutions(bprint: str, score: tuple[int]) -> int:
     # Pruning
     if sum(score) + len(score) + 1 > len(bprint):
         return 0
@@ -43,7 +43,6 @@ def possible_solutions(bprint: str, score: 'tuple[int]') -> int:
     return ans
 
 
-@print_function()
 def solve(input: str, factor: int = 5) -> int:
     lines = input.split('\n')
     ans = 0
@@ -56,12 +55,15 @@ def solve(input: str, factor: int = 5) -> int:
     return ans
 
 
-def main(input: str) -> 'tuple(int, int)':
+@print_function()
+def main(input: str) -> tuple[int, int]:
     return (solve(input, 1), solve(input, 5))
+
 
 @print_function()
 def part_one_in_one_line(input: str) -> int:
     return sum([tuple(len(block) for block in re.findall('#+', ''.join([val for pair in zip(bprint.split('?'), chars) for val in pair]) + bprint.split('?')[-1])) == tuple(map(int, vals.split(','))) for bprint, vals in [line.split() for line in input.split('\n')] for chars in it.product('#.', repeat = bprint.count('?'))])
+
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""

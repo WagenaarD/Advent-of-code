@@ -19,7 +19,7 @@ LutRange = namedtuple('LutRange', ('start', 'end', 'offset'))
 
 AOC_ANSWER = (309796150, 50716416)
 
-def part_one(lines):
+def part_one(lines: list[str]) -> int:
     seeds = map(int, re.findall('\d+', lines[0]))
     luts = []
     for line in lines[1:]:
@@ -39,7 +39,7 @@ def part_one(lines):
         p1.append(pos)
     return min(p1)
 
-def part_two(lines: 'list[str]') -> int:
+def part_two(lines: list[str]) -> int:
     seed_ranges = [tuple(map(int, pair.split())) for pair in re.findall('\d+ \d+', lines[0])]
     seed_ranges = {SeedRange(start, start + length) for start, length in seed_ranges}
 
@@ -72,7 +72,7 @@ def part_two(lines: 'list[str]') -> int:
                 
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))
 

@@ -18,6 +18,7 @@ def run_all(aoc_year_path: str = '../2023', repeats: int = 1) -> int:
             input = f.read().strip()
         code = importlib.import_module(f'{day_name}.main')
         time_s = []
+        print(f'Starting testing for {day_name}')
         for _ in range(repeats):
             ans = code.main(input)
             time_s.append((datetime.datetime.now() - t0).total_seconds())

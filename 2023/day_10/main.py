@@ -37,7 +37,7 @@ PIPES = {
 PRIMARY_AXIS_ADJACENT = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
 @print_function()
-def main(input: str) -> int:
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     s_pos = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == 'S'][0]
     

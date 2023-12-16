@@ -21,7 +21,7 @@ ADJACENT = tuple((r, c) for r in range(-1, 2) for c in range(-1, 2) if (r, c) !=
 NON_SYMBOLS = '1234567890.'
 
 @print_function()
-def main(input: 'str'):
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     nrows, ncols = len(lines), len(lines[0])
     score_p1 = 0

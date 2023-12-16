@@ -36,11 +36,12 @@ SORT_SETTINGS = {
 }
 NO_CYCLES = 1_000_000_000
 
-def calc_load(rounds: 'list[tuple[int, int]]', dims: 'int') -> int:
+def calc_load(rounds: list[tuple[int, int]], dims: tuple[int, int]) -> int:
     return sum([dims[0] - r for r, c in rounds])
 
 
-def apply_tilt(rounds: list, cubes: tuple, dims: tuple, t_dir: tuple) -> tuple:
+def apply_tilt(rounds: list[tuple[int, int]], cubes: tuple[tuple[int, int]], dims: tuple[int, int], 
+               t_dir: tuple[int, int]) -> tuple[int, int]:
     """
     Mutates rounds (returns by argument). Needs to be sped up. Caching is not very useful
     """
@@ -60,7 +61,8 @@ def apply_tilt(rounds: list, cubes: tuple, dims: tuple, t_dir: tuple) -> tuple:
         rounds[idx] = (r - dr, c - dc)
 
 
-def apply_cycle(rounds: list, cubes: tuple, dims: tuple) -> None:
+def apply_cycle(rounds: list[tuple[int, int]], cubes: tuple[tuple[int, int]], 
+                dims: tuple[int, int]) -> None:
     """
     Applies four tilts
     """
@@ -68,7 +70,8 @@ def apply_cycle(rounds: list, cubes: tuple, dims: tuple) -> None:
         apply_tilt(rounds, cubes, dims, t_dir)
 
 
-def visualize(rounds: list, cubes: tuple, dims: tuple):
+def visualize(rounds: list[tuple[int, int]], cubes: tuple[tuple[int, int]], 
+              dims: tuple[int, int]) -> None:
     """
     Visualization only.
     """
@@ -85,11 +88,11 @@ def visualize(rounds: list, cubes: tuple, dims: tuple):
         print(line)
     print('')
 
-def part_one(rounds: list, cubes: tuple, dims: tuple) -> int:
+def part_one(rounds: list, cubes: tuple, dims: tuple[int, int]) -> int:
     apply_tilt(rounds, cubes, dims, TILT_DIRS[0])
     return calc_load(rounds, dims)
 
-def part_two(rounds: list, cubes: tuple, dims: tuple) -> int:
+def part_two(rounds: list, cubes: tuple, dims: tuple[int, int]) -> int:
     """
     Look for a repetition in the pattern. After each cycle store the rounds positions and check if
     the current pattern has occured before. If it did, any integer number of pattern_lengths can
@@ -103,7 +106,7 @@ def part_two(rounds: list, cubes: tuple, dims: tuple) -> int:
         apply_cycle(rounds, cubes, dims)
         t_rounds = tuple(rounds)
         if t_rounds in known_rounds:
-            print(idx, known_rounds[t_rounds])
+            # print(idx, known_rounds[t_rounds])
             break
         known_rounds[t_rounds] = idx
     # Apply remaining cycles
@@ -117,7 +120,7 @@ def part_two(rounds: list, cubes: tuple, dims: tuple) -> int:
 
 
 @print_function()
-def main(input):
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     dims = (len(lines), len(lines[0]))
     rounds, cubes = [], []

@@ -15,7 +15,7 @@ sys.path.append('../..')
 from aoc_tools import print_function
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     score_p1, score_p2 = 0, 0
     for line in input.split('\n'):
         deriv_lines = [list(map(int, line.split()))]

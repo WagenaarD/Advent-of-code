@@ -21,7 +21,7 @@ BAG_CONFIG = {
 }
 
 @print_function()
-def main(input):
+def main(input: str) -> tuple[int, int]:
     score_p1 = 0
     score_p2 = 0
     for idx, line in enumerate(input.split('\n')):

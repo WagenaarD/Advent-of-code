@@ -18,7 +18,7 @@ import math
 
 AOC_ANSWER = (16579, 12927600769609)
 
-def part_one(lines):
+def part_one(lines: list[str]) -> int:
     dirs = lines[0]
     words = [re.findall('\w+', line) for line in lines[2:]]
     elements = {word[0]: {'L': word[1], 'R': word[2]} for word in words}
@@ -29,7 +29,7 @@ def part_one(lines):
         pos = elements[pos][dir]
     return step_count
 
-def part_two(lines):
+def part_two(lines: list[str]) -> int:
     dirs = lines[0]
     words = [re.findall('\w+', line) for line in lines[2:]]
     elements = {word[0]: {'L': word[1], 'R': word[2]} for word in words}
@@ -45,7 +45,7 @@ def part_two(lines):
     return reduce(math.lcm, z_found)
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))
 

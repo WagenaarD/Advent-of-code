@@ -21,7 +21,7 @@ class Hand:
     def __init__(self, hand: str):
         self.hand: str = hand
 
-    def strength(self, joker = '_') -> 'tuple(int, int, int, int, int, int)':
+    def strength(self, joker: str = '_') -> tuple[int, int, int, int, int, int]:
         kicker_rankings = [joker] + KICKER_RANKS
         joker_count = self.hand.count(joker)
         hand = self.hand.replace(joker, '')
@@ -34,14 +34,14 @@ class Hand:
         return (strength, *[kicker_rankings.index(card) for card in self.hand])
         
 
-def solve(lines, joker = '_'):
+def solve(lines, joker: str = '_') -> int:
     hand_list = [(Hand(hand), int(bid)) for hand, bid in [line.split() for line in lines]]
     hand_list.sort(key = lambda pair: pair[0].strength(joker))
     return sum([idx * bid for idx, (hand, bid) in enumerate(hand_list, 1)])
 
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (solve(lines), solve(lines, 'J'))
 

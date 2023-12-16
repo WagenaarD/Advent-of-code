@@ -16,7 +16,7 @@ from aoc_tools import print_function
 AOC_ANSWER = (21485, 11024379)
 
 @print_function()
-def main(input: str) -> 'tuple(int, int)':
+def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     score_p1, score_p2 = 0, [1] * len(lines)
     for idx, line in enumerate(lines):

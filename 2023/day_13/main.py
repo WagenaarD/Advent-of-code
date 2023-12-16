@@ -11,24 +11,10 @@ AOC_ANSWER = (34772, 35554)
 
 import sys
 sys.path.append('../..')
-from aoc_tools import *
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
-
-# To summarize your pattern notes, add up the number of columns to the left of each vertical line of 
-# reflection; to that, also add 100 multiplied by the number of rows above each horizontal line of 
-# reflection. In the above example, the first pattern's vertical line has 5 columns to its left and 
-# the second pattern's horizontal line has 4 rows above it, a total of 405.
+from aoc_tools import print_function
 
 
-
-def find_horizontals(b: str, factor = 1) -> 'list[int]':
+def find_horizontals(b: str, factor: int = 1) -> list[int]:
     """
     Finds all horizontal mirror lines
     """    
@@ -56,14 +42,14 @@ def transpose_block(b: str) -> str:
     return '\n'.join([''.join(row) for row in bt])
 
 
-def block_scores(b: str) -> 'list[int]':
+def block_scores(b: str) -> list[int]:
     """
     Returns a list of possible scores for various horizontal and vertical lines.
     """
     return [num * 100 for num in find_horizontals(b)] + find_horizontals(transpose_block(b))
 
 
-def print_block_line(b, idx = -1, transpose = False):
+def print_block_line(b: str, idx: int = -1, transpose: bool = False) -> None:
     """
     Only serves visualization purposes
     """
@@ -76,12 +62,9 @@ def print_block_line(b, idx = -1, transpose = False):
         else:
             print(f'{line_idx:3} {line}')
 
-@print_function()
 def part_one(input: str) -> int:
     return sum(sum(block_scores(b)) for b in input.split('\n\n'))
 
-
-@print_function()
 def part_two(input: str) -> int:
     bs = input.split('\n\n')
     ans = 0
@@ -90,7 +73,7 @@ def part_two(input: str) -> int:
         # print(f'\n{b_idx}: Start')
         # print_block_line(b)
         # print('')
-        print_block_line(b, -1, True)
+        # print_block_line(b, -1, True)
         for idx, char in enumerate(b):
             if char == '\n':
                 continue
@@ -111,8 +94,8 @@ def part_two(input: str) -> int:
             assert False, f'No solution for {b_idx}'
     return ans
 
-
-def main(input: str) -> 'tuple(int, int)':
+@print_function()
+def main(input: str) -> tuple[int, int]:
     return (part_one(input), part_two(input))
 
 

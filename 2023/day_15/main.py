@@ -55,7 +55,8 @@ def part_two(input: str) -> int:
             ans += (box_idx+1) * lens_idx * int(focal_length)
     return ans
 
-def main(input: str) -> 'tuple[int, int]':
+@print_function()
+def main(input: str) -> tuple[int, int]:
     return(part_one(input), part_two(input))
 
 
