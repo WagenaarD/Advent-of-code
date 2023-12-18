@@ -11,14 +11,6 @@ AOC_ANSWER = (49897, 194033958221830)
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
 
 DIRS = {
     'D': ( 1,  0),
