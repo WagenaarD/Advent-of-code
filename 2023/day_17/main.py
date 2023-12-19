@@ -12,7 +12,7 @@ python3 main.py < in
 AOC_ANSWER = (1238, 1362)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 from functools import cache
 
@@ -105,7 +105,7 @@ def solve(input: str, step_bounds: tuple[int, int] = (1, 3), log: bool = False) 
     return score_threshold
 
 
-@print_function()
+@print_function
 def main(input: str, log: bool = False) -> tuple[int, int]:
     return (solve(input, (1, 3), log), solve(input, (4, 10), log))
 

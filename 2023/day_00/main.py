@@ -20,7 +20,7 @@ from functools import cache
 import math
 
 
-@print_function()
+@print_function
 def part_one(input: str) -> int:
     lines = input.split('\n')
 
@@ -30,10 +30,10 @@ def part_one(input: str) -> int:
 
 
 
-@print_function()
+@print_function
 def part_two(input: str) -> int:
     lines = input.split('\n')
-# @print_function()
+# @print_function
 # def main(input: str) -> tuple[int, int]:
 #     return (part_one(input), part_two(input))
 if __name__ == '__main__':

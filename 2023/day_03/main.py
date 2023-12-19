@@ -9,7 +9,7 @@ python3 main.py < in
 # 09:47:59  21:41
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import re
 import math
@@ -20,7 +20,7 @@ AOC_ANSWER = (557705, 84266818)
 ADJACENT = tuple((r, c) for r in range(-1, 2) for c in range(-1, 2) if (r, c) != (0,0))
 NON_SYMBOLS = '1234567890.'
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     nrows, ncols = len(lines), len(lines[0])

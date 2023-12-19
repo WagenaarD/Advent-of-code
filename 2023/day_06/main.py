@@ -9,7 +9,7 @@ python3 main.py < in
 # 08:27:11
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import math
 
@@ -58,7 +58,7 @@ def part_two_brute_1(lines: list[str]) -> int:
     return ans
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))

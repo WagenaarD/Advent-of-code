@@ -10,7 +10,7 @@ python3 main.py < in
 AOC_ANSWER = (7286, 25470469710341)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import re
 from functools import cache
@@ -55,12 +55,12 @@ def solve(input: str, factor: int = 5) -> int:
     return ans
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     return (solve(input, 1), solve(input, 5))
 
 
-@print_function()
+@print_function
 def part_one_in_one_line(input: str) -> int:
     return sum([tuple(len(block) for block in re.findall('#+', ''.join([val for pair in zip(bprint.split('?'), chars) for val in pair]) + bprint.split('?')[-1])) == tuple(map(int, vals.split(','))) for bprint, vals in [line.split() for line in input.split('\n')] for chars in it.product('#.', repeat = bprint.count('?'))])
 

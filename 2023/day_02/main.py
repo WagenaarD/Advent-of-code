@@ -9,7 +9,7 @@ python3 main.py < in
 # 10:22:06 (leaderboard filled in 06:15)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import math
 
@@ -20,7 +20,7 @@ BAG_CONFIG = {
     'blue': 14,
 }
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     score_p1 = 0
     score_p2 = 0

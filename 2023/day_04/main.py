@@ -10,12 +10,12 @@ python3 main.py < in
 # 08:13:14  13:40   07:08
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
 AOC_ANSWER = (21485, 11024379)
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     score_p1, score_p2 = 0, [1] * len(lines)

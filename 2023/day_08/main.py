@@ -9,7 +9,7 @@ python3 main.py < in
 # 11:16:57
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import itertools as it
 import re
@@ -44,7 +44,7 @@ def part_two(lines: list[str]) -> int:
             break
     return reduce(math.lcm, z_found)
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))

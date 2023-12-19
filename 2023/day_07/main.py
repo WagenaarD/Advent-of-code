@@ -9,7 +9,7 @@ python3 main.py < in
 # 11:51:39
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 from collections import Counter
 
@@ -40,7 +40,7 @@ def solve(lines, joker: str = '_') -> int:
     return sum([idx * bid for idx, (hand, bid) in enumerate(hand_list, 1)])
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (solve(lines), solve(lines, 'J'))

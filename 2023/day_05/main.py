@@ -10,7 +10,7 @@ python3 main.py < in
 # 16:10:27
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import re
 from collections import namedtuple
@@ -71,7 +71,7 @@ def part_two(lines: list[str]) -> int:
     return min([num[0] for num in seed_ranges])
                 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))

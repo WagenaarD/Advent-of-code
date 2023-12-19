@@ -11,10 +11,10 @@ python3 main.py < in
 AOC_ANSWER = (10313550, 611998089572)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
-@print_function()
+@print_function
 def main(input: str, factor: int = 1_000_000) -> tuple[int, int]:
     lines = input.split('\n')
     galaxies = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == '#']

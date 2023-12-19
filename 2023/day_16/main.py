@@ -11,7 +11,7 @@ python3 main.py < in
 AOC_ANSWER = (7860, 8331)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
 DIRS = {
@@ -63,13 +63,13 @@ def solve(grid: list[str], beam: tuple[int, int, str]) -> int:
     return len(seen_pos)
 
 
-@print_function()
+@print_function
 def part_one(grid: list[str]) -> int:
     beam = (0,-1,'>')
     return solve(grid, beam)
 
 
-@print_function()
+@print_function
 def part_two(grid: list[str]) -> int:
     scores = []
     for r in range(len(grid)):

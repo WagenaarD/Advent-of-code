@@ -10,7 +10,7 @@ python3 main.py < in
 AOC_ANSWER = (108955, 106689)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import *
 import itertools as it
 from dataclasses import dataclass, field
@@ -59,7 +59,7 @@ def apply_tilt(rounds: list[tuple[int, int]], cubes: set[tuple[int, int]], dims:
         rounds[idx] = (r - dr, c - dc)
 
 
-@print_function()
+@print_function
 def apply_cycle(rounds: list[tuple[int, int]], cubes: set[tuple[int, int]], 
                 dims: tuple[int, int]) -> None:
     """
@@ -117,7 +117,7 @@ def part_two(rounds: list, cubes: set[tuple[int, int]], dims: tuple[int, int]) -
             return calc_load(rounds, dims)
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     dims = (len(lines), len(lines[0]))

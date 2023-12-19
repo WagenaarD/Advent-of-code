@@ -11,7 +11,7 @@ python3 main.py < in
 AOC_ANSWER = (6613, 511)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
 # The pipes are arranged in a two-dimensional grid of tiles:
@@ -36,7 +36,7 @@ PIPES = {
 }
 PRIMARY_AXIS_ADJACENT = ((1, 0), (-1, 0), (0, 1), (0, -1))
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     s_pos = [(r, c) for r, row in enumerate(lines) for c, char in enumerate(row) if char == 'S'][0]

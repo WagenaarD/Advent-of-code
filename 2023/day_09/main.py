@@ -11,10 +11,10 @@ python3 main.py < in
 AOC_ANSWER = (1702218515, 925)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     score_p1, score_p2 = 0, 0
     for line in input.split('\n'):

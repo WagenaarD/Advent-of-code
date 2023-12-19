@@ -38,7 +38,7 @@ def visualize_part_one(trench: set[tuple[int, int]], seen: set[tuple[int, int]] 
         print(out)
 
 
-@print_function()
+@print_function
 def part_one(input: str, vis: bool = True) -> int:
     lines = input.split('\n')
     trench = set()
@@ -111,7 +111,7 @@ def solve(input: str, part_two = False) -> int:
         nodes.append(pos)
     return get_area(nodes)
     
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     return (solve(input, False), solve(input, True))
 

@@ -71,7 +71,7 @@ def solve(input: str, step_bounds: tuple[int, int] = (1, 3)) -> int:
     return min(cost for (pos, dir, dl), cost in seen.items() if pos == target)
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     return (solve(input, (1, 3)), solve(input, (4, 10)))
 

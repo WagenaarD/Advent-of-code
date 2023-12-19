@@ -10,7 +10,7 @@ python3 main.py < in
 AOC_ANSWER = (34772, 35554)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 
 
@@ -94,7 +94,7 @@ def part_two(input: str) -> int:
             assert False, f'No solution for {b_idx}'
     return ans
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     return (part_one(input), part_two(input))
 

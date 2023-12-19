@@ -7,7 +7,7 @@ python3 main.py < in
 # forgot
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 import re
 
@@ -30,7 +30,7 @@ def part_two(lines: list[str]) -> int:
     values = [int(clean_number_str(nums[0]) + clean_number_str(nums[-1])) for nums in num_lines]
     return sum(values)
     
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     lines = input.split('\n')
     return (part_one(lines), part_two(lines))

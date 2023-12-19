@@ -11,7 +11,7 @@ python3 main.py < in
 AOC_ANSWER = (506891, 230462)
 
 import sys
-sys.path.append('../..')
+sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
 from collections import defaultdict
 import re
@@ -22,11 +22,11 @@ def process_label(label: str) -> int:
         value = ((value + ord(ch))*17)%256
     return value
 
-@print_function()
+@print_function
 def part_one(input: str) -> int:
     return sum([process_label(step) for step in input.split(',')])
 
-@print_function()
+@print_function
 def part_two(input: str) -> int:
     lines = input.split(',')
     # Box moving
@@ -55,7 +55,7 @@ def part_two(input: str) -> int:
             ans += (box_idx+1) * lens_idx * int(focal_length)
     return ans
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     return(part_one(input), part_two(input))
 

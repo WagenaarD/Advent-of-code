@@ -42,7 +42,7 @@ def is_accepted(part, wfs, wf_name):
 
 def part_one(wfs: dict[list], part_strings: list[str]) -> int:
     """
-    
+
     """
     ans = 0
     for part_str in part_strings:
@@ -99,7 +99,7 @@ def part_two(wfs: dict[list]) -> int:
     return ans
 
 
-@print_function()
+@print_function
 def main(input: str) -> tuple[int, int]:
     input_p1, input_p2 = input.split('\n\n')
     wfs = {} # workflows

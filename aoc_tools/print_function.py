@@ -1,5 +1,5 @@
 """
-Project description here
+Decorator for quickly printing function results
 """
 
 __project__   = ''
@@ -8,6 +8,7 @@ __copyright__ = 'Copyright UMCG, UMC Groningen - The Netherlands'
 __version__   = '1.0.1'
 
 import datetime
+import inspect
 
 
 def arg_repr(argument):
@@ -23,15 +24,20 @@ def arg_repr(argument):
         return '{:.50}'.format(repr(argument))
 
 
-def print_function(start = False, run_time = True, include_args = False, is_method = False, prefix = ''):
+def print_function(func = None, start = False, run_time = True, include_args = False, is_method = False, prefix = ''):
     """
     To be used as a decorator: e.g.
-    @print_function(prefix = ' - ')
+        @print_function(prefix = ' - ')
+        def function(): ...
 
     Prints the function call arguments, results and run_time (optional). is_method needs to be set
     to True for methods for correct logging result. Setting start to True also prints the function
     call before running the function which can be usefull for slow functions. Setting a prefix can
     help distinguish these console outputs from other print statements.
+
+    Can also be called directly if no custom arguments are set:
+        @print_function
+        def function(): ...
     """
     def outer_decorator(function):
         def inner_decorator(*args, **kwargs):
@@ -69,4 +75,6 @@ def print_function(start = False, run_time = True, include_args = False, is_meth
 
             return value
         return inner_decorator
+    if inspect.isfunction(func):
+        return outer_decorator(func)
     return outer_decorator
