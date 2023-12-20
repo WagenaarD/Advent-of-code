@@ -5,7 +5,7 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (None, None)
+AOC_ANSWER = (861743850, 247023644760071)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
@@ -18,6 +18,7 @@ import numpy as np
 from pprint import pprint
 from functools import cache
 import math
+import time
 
 """
 broadcaster
@@ -25,13 +26,16 @@ broadcaster
 &: Conjunction
 """
 
-def press_button(modules: dict, log = False) -> tuple[int, int]:    
+def press_button(modules: dict, rx_source: str, log: bool = False) -> list[int, int, list[str]]:    
     stack = [('broadcaster', False, 'button')]
-    total_pulses = [0, 0]
+    output = [0, 0, []]
     while stack:
         pls_target, pls_strength, pls_source = stack.pop(0)
         if log: print(f'{pls_source} -{"high" if pls_strength else "low"}-> {pls_target}')
-        total_pulses[pls_strength] += 1
+        output[pls_strength] += 1
+        if pls_target == rx_source:
+            if pls_strength: 
+                output[2].append(pls_source)
         if not pls_target in modules:
             continue
         mod_type, mod_targets, state, inputs = modules[pls_target]
@@ -40,7 +44,7 @@ def press_button(modules: dict, log = False) -> tuple[int, int]:
             for mod_target in mod_targets:
                 stack.append((mod_target, pls_strength, pls_target))
         elif mod_type == '%': 
-            # Flip-flop
+            # Flip-flop % 
             # If a flip-flop module receives a high pulse, it is ignored and nothing happens. 
             # However, if a flip-flop module receives a low pulse, it flips between on and off. 
             if not pls_strength:
@@ -52,7 +56,7 @@ def press_button(modules: dict, log = False) -> tuple[int, int]:
                 for mod_target in mod_targets:
                     stack.append((mod_target, new_pls_strength, pls_target))
         elif mod_type == '&':
-            # Conjunction
+            # Conjunction &
             # Conjunction modules (prefix &) remember the type of the most recent pulse received 
             # from each of their connected input modules; they initially default to remembering a 
             # low pulse for each input. 
@@ -62,12 +66,13 @@ def press_button(modules: dict, log = False) -> tuple[int, int]:
             new_pls_strength = not all(inputs.values())
             for mod_target in mod_targets:
                 stack.append((mod_target, new_pls_strength, pls_target))
-    return total_pulses
+    return output
 
 
 @print_function
-def part_one(input: str) -> int:
+def main(input: str) -> int:
     lines = input.split('\n')
+    # Store the input in a dict
     modules = {}
     for line in lines:
         left, right = line.split(' -> ')
@@ -82,38 +87,38 @@ def part_one(input: str) -> int:
             modules[left[1:]] = [left[0], right.split(', '), False, {}]
     # Record all inputs for conjunction modules
     for mod_name, (mod_type, targets, state, inputs) in modules.items():
+        if 'rx' in targets:
+            rx_source = mod_name
         for pls_target in targets:
             if pls_target in modules:
                 modules[pls_target][3][mod_name] = False
-    # pprint(modules)
     # Process the button press
     low_tot, hi_tot = 0, 0
-    for idx in range(1_000):
-        low, hi = press_button(modules)
+    idx = 0
+    rx_ping_idxs = {}
+    ans_p1, ans_p2 = None, None
+    while True:
+        idx += 1
+        low, hi, rx_ping_names = press_button(modules, rx_source)
         low_tot += low
         hi_tot += hi
-    return low_tot * hi_tot
+        if idx == 1_000:
+            ans_p1 = low_tot * hi_tot
+        # Record idxs in which the rx_source got pinged by its various sources
+        for name in rx_ping_names:
+            if name not in rx_ping_idxs:
+                rx_ping_idxs[name] = idx
+        # Once pinged by all, we look for the soonest they all sync up. We assume a cycle starting 
+        # at 0
+        if len(rx_ping_idxs) == len(modules[rx_source][3]):
+            ans_p2 =math.lcm(*rx_ping_idxs.values())
+        if ans_p1 and ans_p2:
+            return (ans_p1, ans_p2)
 
-    
 
-
-
-
-
-
-
-
-@print_function
-def part_two(input: str) -> int:
-    lines = input.split('\n')
-# @print_function
-# def main(input: str) -> tuple[int, int]:
-#     return (part_one(input), part_two(input))
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     input = sys.stdin.read().strip()
-    print(part_one(input) == AOC_ANSWER[0])
-    print(part_two(input) == AOC_ANSWER[1])
-    # print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
 
 
