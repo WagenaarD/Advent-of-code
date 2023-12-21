@@ -10,21 +10,8 @@ AOC_ANSWER = (861743850, 247023644760071)
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
 import math
-import time
 
-"""
-broadcaster
-%: Flip-flop
-&: Conjunction
-"""
 
 def press_button(modules: dict, rx_source: str, log: bool = False) -> list[int, int, list[str]]:    
     stack = [('broadcaster', False, 'button')]
