@@ -10,126 +10,85 @@ AOC_ANSWER = (3642, 608603023105276)
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
 from aoc_tools import print_function
+import heapq
 
 
-def visualize(grid, seen):
-    for r, row in enumerate(grid):
-        line = ''
-        for c, char in enumerate(row):
-            line += 'O' if (r, c) in seen else char
-        print(line)
-
-
-def part_one(input: str) -> int:
-    grid = input.split('\n')
-    s_pos = [(r, c) for r, row in enumerate(grid) for c, char in enumerate(row) if char == 'S'][0]
-    if is_example := (len(grid) < 20):
-        total_steps = 6
-    else:
-        total_steps = 64
-    stack = {s_pos}
-    for idx in range(total_steps):
-        new_stack = set()
-        while stack:
-            r, c = stack.pop()
-            for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-                rr, cc = r + dr, c + dc
-                out_of_bounds = not (0 <= rr < len(grid) and 0 <= cc < len(grid[0]))
-                if out_of_bounds:
-                    continue
-                if grid[rr][cc] != '#':
-                    new_stack.add((rr, cc))
-        stack = new_stack
-    return len(stack)
-
-
-def advance_one(grid:list[str], in_grid: list[list[list[tuple[int,int]]]], stack: set[tuple[int,int]]):
+@print_function
+def main(input, total_distance = 26501365):
     """
-    Takes one more step and stores which grid locations are reached in which grid. Grids are 
-    indicated by loop_r and loop_c.
-    """
-    new_stack = set()
-    while stack:
-        r, c, loop_r, loop_c  = stack.pop()
-        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-            loop_rr = loop_r + (r + dr) // len(grid)
-            loop_cc = loop_c + (c + dc) // len(grid[0])
-            rr = (r + dr) % len(grid)
-            cc = (c + dc) % len(grid[0])
-            if grid[rr][cc] == '#':
-                continue
-            if (loop_rr, loop_cc) in in_grid[rr][cc]:
-                continue
-            in_grid[rr][cc].append((loop_rr, loop_cc))
-            new_stack.add((rr, cc, loop_rr, loop_cc))
-    return new_stack
-
-
-def get_score(in_grid: list[list[list[tuple[int, int]]]], total_steps: int) -> int:
-    """
-    Calculates all locations that have been reached and that are reached in an even or uneven number 
-    of steps (depending on the total number of steps).
-    """
-    ans = 0
-    for r, row in enumerate(in_grid):
-        for c, in_gs in enumerate(row):
-            for loop_r, loop_c in in_gs:
-                ans += (r + c + loop_r + loop_c) % 2 == total_steps % 2
-    return ans
-
-
-def part_two(input: str, total_steps: int = 26501365) -> int:
-    """
-    Sped up significantly compared to part one. No longer keep track of all possible paths but track
-    which locations are within reach. Afterwards, whether they are reacheable depends on whether it
-    takes an even or uneven number of steps to reach that location.
-    Next improvement is to look for a repeating pattern. The score is a quadratic function.
+    Greatly improved algorithm. Determines distance to every coordinate in a 3x3 tile of grids
+    centered around S. For the center tile, coordinates are scored normally. For adjacent tiles and
+    corner tiles, the score is multiplied with how many similar tiles can be reached within the 
+    total distance. This uses the fact that the outer and center rows and colums are unblocked.
     """
     grid = input.split('\n')
     s_pos = [(r, c) for r, row in enumerate(grid) for c, char in enumerate(row) if char == 'S'][0]
     # True for my input, will be assumed throughout:
+    assert len(grid) == len(grid[0])
     assert len(grid) % 2 == 1
-    assert len(grid[0]) % 2 == 1
-    assert s_pos[0] == len(grid) // 2
-    assert s_pos[1] == len(grid[0]) // 2
     assert all(grid[r][s_pos[1]] in '.S' for r in range(len(grid)))
     assert all(grid[s_pos[0]][c] in '.S' for c in range(len(grid[0])))
-    # in_grid describes in which grids the value has been reached
-    in_grid = [[[] for c in row] for r, row in enumerate(grid)]
-    in_grid[s_pos[0]][s_pos[1]].append((0,0))
-    stack = {(*s_pos, 0, 0)}
-    # The edge of the grid will be reached after half a grid length. Afterwardsm, new grids are 
-    # reached every (len(grid)) iterations. Scores are different every grid since the moves required 
-    # to reach them are uneven. Therefore, scores follow a pattern every two grid lengths.
-    loop_offset = s_pos[0]
-    loop_length = len(grid) * 2
-    assert (total_steps - loop_offset) % loop_length == 0, 'True for my input'
-    fit_scores = []
-    for idx in range(total_steps):
-        if (idx-loop_offset) % loop_length == 0:
-            fit_scores.append(get_score(in_grid, total_steps))
-        if len(fit_scores) >= 3:
-            break
-        stack = advance_one(grid, in_grid, stack)
-    diff_1_0 = fit_scores[1] - fit_scores[0]
-    diff_2_1 = fit_scores[2] - fit_scores[1]
-    a = (diff_2_1 - diff_1_0) // 2
-    c = fit_scores[0]
-    b = fit_scores[1] - a - c
-    extrapolated_score = lambda x: x**2 * a + x * b + c
-    total_loops = (total_steps - loop_offset) // loop_length
-    return extrapolated_score(total_loops)
+    assert all(grid[r][0] == '.' for r in range(len(grid)))
+    assert all(grid[r][-1] == '.' for r in range(len(grid)))
+    assert all(grid[0][c] == '.' for c in range(len(grid[0])))
+    assert all(grid[-1][c] == '.' for c in range(len(grid[0])))
+    # Calculate distance in 3x3 grids surrounding center
+    stack = [(0, *s_pos, 0, 0)]
+    seen = {(*s_pos, 0, 0)}
+    ans_p1 = 1
+    ans_p2 = 0
+    while stack:
+        dist, r, c, gr, gc = heapq.heappop(stack) # heapq didnt really impact speed
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            grr = gr + (r + dr) // len(grid)
+            gcc = gc + (c + dc) // len(grid[0])
+            rr = (r + dr) % len(grid)
+            cc = (c + dc) % len(grid[0])
+            if (rr, cc, grr, gcc) in seen:
+                continue
+            if not (-1 <= grr <= 1 and -1 <= gcc <= 1):
+                continue
+            if grid[rr][cc] == '#':
+                continue
+            if (point_distance := dist + 1) > total_distance:
+                continue
+            if point_distance <= 64 and point_distance % 2 == 0:
+                ans_p1 += 1
+            seen.add((rr, cc, grr, gcc))
+            heapq.heappush(stack, (point_distance, rr, cc, grr, gcc))
+            # stack.append((point_distance, rr, cc, grr, gcc))
+            # Grid distance: Number of grids in one dimension that contain this coordinate within 
+            # the step limit
+            grid_distance = 1 + (total_distance - point_distance) // len(grid)
+            # Even weight = number of identical coordinates reached by taking an even number of 
+            # steps within the step limit. Odd weight = same, but odd number of steps.
+            if abs(grr) + abs(gcc) == 0:
+                even_weight = 1
+                odd_weight = 0
+            elif abs(grr) + abs(gcc) == 1:
+                # Adjacent grid: Total weight equal to grid distance.
+                odd_weight = grid_distance // 2
+                even_weight = grid_distance - odd_weight
+            elif abs(grr) + abs(gcc) == 2:
+                # Corner grid. Total weight is a triangle, so (distance**2 + distance) / 2. Starts
+                # with 1 even, then 2 uneven, then +3 even, then +4 uneven etc.
+                total_weight = (grid_distance**2 + grid_distance) // 2
+                even_grid_distance = (grid_distance+1)//2
+                even_weight = even_grid_distance**2
+                odd_weight = total_weight - even_weight
+            else:
+                assert False
+            if point_distance % 2 == total_distance % 2:
+                ans_p2 += even_weight
+            else:
+                ans_p2 += odd_weight
+    return ans_p1, ans_p2
+
+ 
 
 
-
-
-@print_function
-def main(input: str) -> tuple[int, int]:
-    return (part_one(input), part_two(input))
 
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     input = sys.stdin.read().strip()
     print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
-
-
