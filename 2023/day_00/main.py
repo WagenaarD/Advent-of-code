@@ -38,7 +38,13 @@ def part_two(input: str) -> int:
 #     return (part_one(input), part_two(input))
 if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
+    if sys.stdin.isatty():
+        script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
+        with open(f'{script_path}/in') as f:
+        # with open(f'{script_path}/ex') as f:
+            input = f.read().strip()
+    else:
+        input = sys.stdin.read().strip()
     print(part_one(input) == AOC_ANSWER[0])
     print(part_two(input) == AOC_ANSWER[1])
     # print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
