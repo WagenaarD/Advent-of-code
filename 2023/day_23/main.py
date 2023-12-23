@@ -78,20 +78,32 @@ def solve(input: str, slopes = True) -> int:
         node = nodes_leading_into_end[0]
         distances[node] = {end: distances[node][end]}
     # Calculate all paths from start to end
-    stack = deque([(start, 0, [start])])
-    paths = []
+    max_length = sum(input.count(char) for char in '.<>v^') - 1
+    stack = deque([(start, 0, [start], 0)])
+    ans = 0
     idx = 0
+    # seen = {key: key == start for key in nodes}
     while stack:
-        if (idx := idx + 1) % 500_000 == 0: print(f'{idx:14,} {len(stack):14,}')
-        node, dist, seen = stack.pop()
+        idx += 1
+        if idx % 100_000 == 0: print(f'{idx:,}')
+        node, dist, seen, missed = stack.pop()
+        # Paths that are not taken cannot be taken later and are summed as 'missed'. If the total 
+        # sum of missed paths is larger than what was missed in the current answer, we do not need
+        # to investigate this path further. Improved total paths from 18M to 0.9M and time  from 37s
+        # to 5.4s.
+        if missed > (max_length - ans):
+            continue
+        node_distances = sum(nd-1 for other, nd in distances[node].items() if not other in seen)
         for other in distances[node]:
             if other in seen:
                 continue
-            if other not in seen:
-                stack.append((other, dist + distances[node][other], seen + [other]))
+            new_missed = missed + node_distances - distances[node][other]
+            stack.append((other, dist + distances[node][other], seen + [other], new_missed))
         if node == end:
-            paths.append((dist, seen))
-    return max(path[0] for path in paths)
+            if dist > ans:
+                ans = dist
+    print(f'{idx=:,}')
+    return ans
     
 
 @print_function
