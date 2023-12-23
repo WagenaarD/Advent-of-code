@@ -5,7 +5,7 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (2386, None)
+AOC_ANSWER = (2386, 6246)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
@@ -71,14 +71,19 @@ def solve(input: str, slopes = True) -> int:
                 elif grid[rr][cc] in DIRS[slopes]:
                     seen.add((rr, cc))
                     stack.append((rr, cc, dist + 1))
+    # If only one node connects to the end, that node MUST go to the end
+    # this reduces total paths from 30.5M to 18M (and time from 63s to 37s)
+    nodes_leading_into_end = [n for n in nodes if end in distances[n]]
+    if len(nodes_leading_into_end) == 1:
+        node = nodes_leading_into_end[0]
+        distances[node] = {end: distances[node][end]}
     # Calculate all paths from start to end
-    stack = deque()
-    stack.append((start, 0, [start]))
+    stack = deque([(start, 0, [start])])
     paths = []
-    # idx = 0
+    idx = 0
     while stack:
-        # if (idx := idx + 1) % 100_000 == 0: print(idx, len(stack))
-        node, dist, seen = stack.popleft()
+        if (idx := idx + 1) % 500_000 == 0: print(f'{idx:14,} {len(stack):14,}')
+        node, dist, seen = stack.pop()
         for other in distances[node]:
             if other in seen:
                 continue
