@@ -12,7 +12,7 @@ sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')
 from aoc_tools import print_function
 import itertools as it
 from dataclasses import dataclass, field
-from collections import defaultdict
+from collections import defaultdict, deque
 import re
 import numpy as np
 from pprint import pprint
@@ -40,8 +40,8 @@ if __name__ == '__main__':
     """Executed if file is executed but not if file is imported."""
     if sys.stdin.isatty():
         script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
-        with open(f'{script_path}/in') as f:
-        # with open(f'{script_path}/ex') as f:
+        # with open(f'{script_path}/in') as f:
+        with open(f'{script_path}/ex') as f:
             input = f.read().strip()
     else:
         input = sys.stdin.read().strip()
