@@ -9,7 +9,7 @@ AOC_ANSWER = (2386, 6246)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 from collections import defaultdict, deque
 
 
@@ -111,15 +111,4 @@ def main(input: str) -> tuple[int, int]:
     return (solve(input), solve(input, False))
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    if sys.stdin.isatty():
-        script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
-        with open(f'{script_path}/in') as f:
-        # with open(f'{script_path}/ex') as f:
-            input = f.read().strip()
-    else:
-        input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
-
-
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')

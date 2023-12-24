@@ -9,7 +9,7 @@ AOC_ANSWER = (None, None)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict, deque
@@ -33,20 +33,12 @@ def part_one(input: str) -> int:
 @print_function
 def part_two(input: str) -> int:
     lines = input.split('\n')
-# @print_function
-# def main(input: str) -> tuple[int, int]:
-#     return (part_one(input), part_two(input))
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    if sys.stdin.isatty():
-        script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
-        # with open(f'{script_path}/in') as f:
-        with open(f'{script_path}/ex') as f:
-            input = f.read().strip()
-    else:
-        input = sys.stdin.read().strip()
-    print(part_one(input) == AOC_ANSWER[0])
-    print(part_two(input) == AOC_ANSWER[1])
-    # print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+@print_function
+def main(input: str) -> tuple[int, int]:
+    return (
+        part_one(input), 
+        part_two(input)
+    )
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

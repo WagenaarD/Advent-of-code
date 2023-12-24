@@ -3,8 +3,8 @@ Decorator for quickly printing function results
 """
 
 __project__   = ''
-__author__    = 'd.wagenaar@umcg.nl'
-__copyright__ = 'Copyright UMCG, UMC Groningen - The Netherlands'
+__author__    = 'Dirk'
+__copyright__ = ''
 __version__   = '1.0.1'
 
 import datetime

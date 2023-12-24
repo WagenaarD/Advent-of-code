@@ -14,8 +14,8 @@ Original idea was based on a bash script:
 """
 
 __project__   = 'get_advent_of_code_input_file'
-__author__    = 'dirk.wagenaar@gmail.com'
-__copyright__ = 'not really'
+__author__    = 'DW'
+__copyright__ = ''
 __version__   = '1.0.2'
 
 import json
