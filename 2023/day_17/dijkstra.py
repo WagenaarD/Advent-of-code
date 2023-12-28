@@ -21,7 +21,7 @@ AOC_ANSWER = (1238, 1362)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 from functools import cache
 from collections import deque
 import heapq

@@ -10,7 +10,7 @@ AOC_ANSWER = (49897, 194033958221830)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 
 DIRS = {
     'D': ( 1,  0),
@@ -115,10 +115,7 @@ def solve(input: str, part_two = False) -> int:
 def main(input: str) -> tuple[int, int]:
     return (solve(input, False), solve(input, True))
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
-    print(part_one(input, input.count('\n') < 100) == AOC_ANSWER[0])
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 

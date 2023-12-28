@@ -134,9 +134,7 @@ def main(input: str) -> tuple[int, int]:
         part_two(rounds.copy(), cubes, dims),
     )
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 

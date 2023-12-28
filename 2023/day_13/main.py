@@ -11,7 +11,7 @@ AOC_ANSWER = (34772, 35554)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 
 
 def find_horizontals(b: str, factor: int = 1) -> list[int]:
@@ -99,9 +99,7 @@ def main(input: str) -> tuple[int, int]:
     return (part_one(input), part_two(input))
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 

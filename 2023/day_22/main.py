@@ -16,7 +16,7 @@ AOC_ANSWER = (477, 61555)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 from pprint import pprint
 from collections import namedtuple
 from functools import cache
@@ -102,15 +102,7 @@ def main(input):
     return score_p1, score_p2
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    if sys.stdin.isatty():
-        script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
-        with open(f'{script_path}/in') as f:
-        # with open(f'{script_path}/ex') as f:
-            input = f.read().strip()
-    else:
-        input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 

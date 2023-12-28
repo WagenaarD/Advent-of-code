@@ -12,7 +12,7 @@ AOC_ANSWER = (6613, 511)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 
 # The pipes are arranged in a two-dimensional grid of tiles:
 # - | is a vertical pipe connecting north and south.
@@ -86,9 +86,7 @@ def main(input: str) -> tuple[int, int]:
 
     return (score_p1, score_p2)
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 

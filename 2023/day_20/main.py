@@ -9,7 +9,7 @@ AOC_ANSWER = (861743850, 247023644760071)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function
+from aoc_tools import print_function, aoc_run
 import math
 
 
@@ -103,9 +103,7 @@ def main(input: str) -> int:
             return (ans_p1, ans_p2)
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip()
-    print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))
+aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+# aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 
 
