@@ -30,4 +30,4 @@ def print_loop(generator, max_idx = None):
         t = datetime.datetime.now()
         if (t - last_t).total_seconds() > PERIOD_IN_SECONDS:
             last_t = t
-            print(f'Loop: {idx:5}/{max_idx} eta: {(t - t_0) / idx * (max_idx - idx)}')
+            print(f'Loop: {idx:5}/{max_idx}, time remaining: {(t - t_0) / idx * (max_idx - idx)}')

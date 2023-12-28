@@ -9,7 +9,7 @@ AOC_ANSWER = (613870, None)
 
 import sys
 sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function, aoc_run, eta
+from aoc_tools import print_function, aoc_run, print_loop
 import itertools as it
 from collections import defaultdict
 from pprint import pprint
@@ -19,12 +19,8 @@ import math
 
 def get_uncuttable_edges(connect, max_bfs_idx = 5_000):
     uncuttable_edges = []
-    idx = 0
-    t0 = datetime.now()
-    max_idx = sum([len(v) for _, v in connect.items()])
-    for source in list(connect):
+    for source in print_loop(list(connect)):
         for target in connect[source]:
-            if (idx := idx + 1)%500 == 0: print(f'{idx}/{max_idx}', eta(idx, t0, max_idx))
             if tuple(sorted([source, target])) in uncuttable_edges:
                 continue
             solutions = []
@@ -81,11 +77,8 @@ def main(input: str) -> tuple[int, None]:
     print(f'Reduced cuttable edges from {len(all_edges)} to {len(cuttable_edges)}')
     # Sever three random edges and test if we end up with two groups
     start = device_names[0]
-    idx = 0 
     max_idx = math.prod([len(cuttable_edges) - idx for idx in range(3)])
-    t0 = datetime.now()
-    for severed in it.combinations(cuttable_edges, 3):
-        if (idx := idx + 1)%500 == 0: print(f'{idx}/{max_idx}', eta(idx, t0, max_idx))
+    for severed in print_loop(it.combinations(cuttable_edges, 3), max_idx):
         seen = {start}
         stack = [start]
         while stack:
