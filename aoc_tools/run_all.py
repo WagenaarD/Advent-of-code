@@ -47,13 +47,11 @@ def run_all(aoc_year_path: str = '../2023', repeats: int = 1, plot: bool = False
             fig, ax = plt.subplots()
             labels = [out.day[4:] for out in output]
             values = [out.time_s for out in output]
-            # bar_labels = ['red', 'blue', '_red', 'orange']
             bar_colors = ['tab:blue'] * len(output)
             ax.bar(labels, values, color=bar_colors)
             ax.set_ylabel('Run time [s]')
             year = aoc_year_path.split('/')[-1]
             ax.set_title(f'AOC {year} results ')
-            # ax.legend(title='Fruit color')
             plt.show()
         except ImportError: # Not in pypy3
             pass
