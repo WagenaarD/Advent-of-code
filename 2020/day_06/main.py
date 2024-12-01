@@ -5,36 +5,33 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (None, None)
+AOC_ANSWER = (6911, 3473)
 
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import print_loop
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict, deque, Counter
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
+from collections import Counter
 
 
 @print_function
 def part_one(input: str) -> int:
-    lines = input.split('\n')
-
-
-
-
-
-
+    score = 0
+    for group in input.split('\n\n'):
+        c = Counter(group.replace('\n', ''))
+        score += len(c)
+    return score
 
 @print_function
 def part_two(input: str) -> int:
-    lines = input.split('\n')
+    score = 0
+    for group in input.split('\n\n'):
+        persons = group.split('\n')
+        for char in persons[0]:
+            if all(char in person for person in persons):
+                score += 1
+    return score
+
 @print_function
 def main(input: str) -> tuple[int, int]:
     return (
