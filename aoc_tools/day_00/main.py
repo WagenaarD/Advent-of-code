@@ -1,5 +1,5 @@
 """
-Advent of code challenge 2023
+Advent of code challenge 2024
 python3 ../../aoc_tools/get_aoc_in.py
 python3 main.py < in
 """
@@ -8,8 +8,9 @@ python3 main.py < in
 AOC_ANSWER = (None, None)
 
 import sys
-sys.path.append(AOC_BASE_PATH := '/'.join(__file__.replace('\\', '/').split('/')[:-3]))
-from aoc_tools import print_function, aoc_run
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, print_loop, aoc_run
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict, deque

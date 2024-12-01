@@ -11,6 +11,15 @@ cookie should last about a month, so updating at the end of each november should
 Original idea was based on a bash script:
  - https://www.reddit.com/r/adventofcode/comments/e32v5b/need_help_with_input_download_script_bash/
  - https://github.com/Janiczek/advent-of-code/blob/master/start.sh#L8-L11
+
+Example of aoc_session_cookie.json:
+""
+How to find the cookie
+- Open adventofcode.com in Google Chrome
+- Login
+- Open the Developer tools (Alt, Cmd, I)
+- Go to Application, Cookies, https://adventofcode..., session
+- Copy the cookie 
 """
 
 __project__   = 'get_advent_of_code_input_file'
@@ -18,33 +27,52 @@ __author__    = 'DW'
 __copyright__ = ''
 __version__   = '1.0.2'
 
-import json
 import requests
 import os
+from pathlib import Path
+# import re
 
 # Get cookie
-script_path = '/'.join(__file__.replace('\\', '/').split('/')[:-1])
-with open(script_path + '/aoc_session_cookie.json') as f:
-    cookie = json.loads(f.read())['cookie']  
+SCRIPT_PATH = Path(__file__).parent
+with open(SCRIPT_PATH / 'aoc_session_cookie') as f:
+    COOKIE = f.read()
 
-# Get the day parameters based on the current folder
-year, day_folder = os.getcwd().replace('\\', '/').split('/')[-2:]
-day = day_folder[-2:]
-day_no_zero = str(int(day))
+def get_aoc_in(path: Path = None):
+    if path == None:
+        path = Path(os.getcwd())
 
-# Retreive the response
-response = requests.get(
-    url=f'https://adventofcode.com/{year}/day/{day_no_zero}/input', 
-    cookies={'session': cookie}, 
-    headers={}
-)
+    # Get the day parameters based on the current folder
+    year = path.parts[-2]
+    day_folder = path.parts[-1]
+    day = day_folder[-2:]
+    day_no_zero = str(int(day))
 
-# Remove trailing linebreak
-content = response.content.decode()
-if content.endswith('\n'):
-    content = content [:-1]
+    # Retreive the response
+    response = requests.get(
+        url=f'https://adventofcode.com/{year}/day/{day_no_zero}/input', 
+        cookies={'session': COOKIE}, 
+        headers={}
+    )
 
-# Write the output
-print(content)
-with open('in', 'w') as f:
-    f.write(content)
+    # Remove trailing linebreak
+    content = response.content.decode()
+    if content.endswith('\n'):
+        content = content [:-1]
+
+    # Write the output
+    print(content)
+    with open(path / 'in', 'w') as f:
+        f.write(content)
+
+    # # Retreive assignment
+    # response = requests.get(
+    #     url=f'https://adventofcode.com/{year}/day/{day_no_zero}', 
+    #     cookies={'session': COOKIE}, 
+    #     headers={}
+    # )
+    # content = response.text
+    # body = re.search('<article[.\n]*', content)
+
+if __name__ == '__main__':
+    """Executed if file is executed but not if file is imported."""
+    get_aoc_in()
