@@ -1,17 +1,20 @@
 # Advent of code
-Puzzle solutions by DW
+I started doing advent of code in 2022 and merged all progress into a single github. I generally try
+to write solutions which strike a balance between fast, readable and concise. I might go back and do
+the older problems. 
 
-### 2015: 4 ⭐ (Python)
+## Solutions by year (Python)
+### 2015: 4 ⭐
 ### 2016: -
 ### 2017: -
 ### 2018: -
 ### 2019: -
-### 2020: 2 ⭐ (Python)
+### 2020: 2 ⭐
 ### 2021: -
-### 2022: 50 ⭐ (Python)
-### 2023: 50 ⭐ (Python)
+### 2022: 50 ⭐
+### 2023: 50 ⭐
 ### 2024: In progress
 
-## Usefull links:
-- adventofcode.com
-- Leaderboard times (difficulty metric): https://aoc.xhyrom.dev/
+## Links:
+- [adventofcode.com](https://adventofcode.com/)
+- [Leaderboard times (difficulty metric)](https://aoc.xhyrom.dev/)

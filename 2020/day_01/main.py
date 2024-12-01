@@ -5,36 +5,32 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (None, None)
+AOC_ANSWER = (270144, 261342720)
 
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import print_loop
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict, deque
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
 
 
 @print_function
 def part_one(input: str) -> int:
-    lines = input.split('\n')
-
-
-
-
-
-
+    nums = list(map(int, input.split('\n')))
+    for idx, num in enumerate(nums):
+        for other in nums[idx+1:]:
+            if num + other == 2020:
+                return num * other
 
 @print_function
 def part_two(input: str) -> int:
-    lines = input.split('\n')
+    nums = list(map(int, input.split('\n')))
+    for idx_1, num_1 in enumerate(nums):
+        for idx_2, num_2 in enumerate(nums[idx_1+1:]):
+            for num_3 in nums[idx_1+idx_2+1:]:
+                if num_1 + num_2 + num_3 == 2020:
+                    return num_1 * num_2 * num_3
+
+
 @print_function
 def main(input: str) -> tuple[int, int]:
     return (
