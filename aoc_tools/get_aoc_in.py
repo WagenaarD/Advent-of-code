@@ -36,6 +36,7 @@ from pathlib import Path
 SCRIPT_PATH = Path(__file__).parent
 with open(SCRIPT_PATH / 'aoc_session_cookie') as f:
     COOKIE = f.read()
+URL = 'https://adventofcode.com/{}/day/{}'
 
 def get_aoc_in(path: Path = None):
     if path == None:
@@ -61,6 +62,7 @@ def get_aoc_in(path: Path = None):
 
     # Write the output
     print(content)
+    print(URL.format(year, day_no_zero))
     with open(path / 'in', 'w') as f:
         f.write(content)
 
