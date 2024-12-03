@@ -13,10 +13,11 @@ sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
 
 
-def is_safe(report):
-    # # Tamara did this, which I think is more elegant
+def is_safe(report : 'list[str]') -> bool:
+    ## Tamara did this, which I find more elegant. It is also faster (5ms vs 9ms)
     # report_differences = {n2-n1 for n1, n2 in zip(report, report[1:])}
     # return report_differences <= {1, 2, 3} or report_differences <= {-1, -2, -3}
+    ##  My original code
     signs, diffs = set(), []
     for n1, n2 in zip(report, report[1:]):
         diffs.append(abs(n2-n1))
