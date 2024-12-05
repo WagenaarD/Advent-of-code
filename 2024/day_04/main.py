@@ -47,7 +47,6 @@ def part_one(input: str) -> int:
     ans = sum(l.count('XMAS') + l.count('SAMX') for l in lines)
     return ans
 
-import re
 @print_function
 def part_one(input: str, target: str = 'XMAS') -> int:
     """
