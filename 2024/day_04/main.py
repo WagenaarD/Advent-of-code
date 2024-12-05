@@ -11,7 +11,9 @@ import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
+import itertools as it
 
+DIRS = [(x, y) for x, y in it.product([-1, 0, 1], repeat=2) if not (x == y == 0)]
 
 @print_function
 def part_one(input: str) -> int:
@@ -43,6 +45,34 @@ def part_one(input: str) -> int:
         lines.append(''.join(chars))
     
     ans = sum(l.count('XMAS') + l.count('SAMX') for l in lines)
+    return ans
+
+import re
+@print_function
+def part_one(input: str, target: str = 'XMAS') -> int:
+    """
+    Marginally faster (~25%), but a lot more concise
+    """
+    grid = input.split('\n')
+    width = len(grid[0])
+    print(width, input.find('\n'))
+    ans = 0
+    for y, row in enumerate(grid):
+        for x, char in enumerate(row):
+            # ## These three rows replace the next ~10 but are a factor 2 slower
+            # for dx, dy in DIRS:
+            #     if char == 'X' and 0 <= x+dx*3 < len(grid) and 0 <= y+dy*3 < len(grid[0]):
+            #         ans += [grid[y+dy*step][x+dx*step] for step in range(len(target))] == list(target)
+            if char != target[0]:
+                continue
+            for dx, dy in DIRS:
+                if not (0 <= x+dx*3 < len(grid) and 0 <= y+dy*3 < len(grid[0])):
+                    continue
+                for step in range(1, len(target)):
+                    if grid[y+dy*step][x+dx*step] != target[step]:
+                        break
+                else:
+                    ans += 1
     return ans
 
 
