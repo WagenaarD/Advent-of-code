@@ -1,0 +1,1 @@
+{{?*Advent of Code*}}{{?_Make sure you are in the year folder in a zsh terminal_}}{{day=?Day<{DD}>}}clear && mkdir day_{{day}} && cd day_{{day}} && cp -a ../../aoc_tools/day_00/* . && code main.py in ex && python3 ../../aoc_tools/get_aoc_in.py{return}python3 main.py < ex

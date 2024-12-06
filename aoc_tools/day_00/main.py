@@ -1,4 +1,7 @@
 """
+From year folder:
+../aoc_tools/aoc_start.sh xx && cd day_xx
+
 Advent of code challenge
 python3 ../../aoc_tools/get_aoc_in.py
 python3 main.py < in
@@ -20,6 +23,7 @@ import numpy as np
 from pprint import pprint
 from functools import cache
 import math
+from pprint import pprint
 
 
 @print_function
