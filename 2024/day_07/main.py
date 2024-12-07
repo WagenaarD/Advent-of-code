@@ -29,6 +29,8 @@ def is_valid(result, nums, operators = [mul, add]):
     """
     if len(nums) == 1:
         return nums[0] == result
+    if nums[0] > result:
+        return False
     for op in operators:
         new_nums = [op(nums[0], nums[1])] + nums[2:]
         if is_valid(result, new_nums, operators):

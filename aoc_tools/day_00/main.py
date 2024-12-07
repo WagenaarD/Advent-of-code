@@ -1,9 +1,6 @@
 """
-From year folder:
-../aoc_tools/aoc_start.sh xx && cd day_xx
-
 Advent of code challenge
-python3 ../../aoc_tools/get_aoc_in.py
+To run code, copy to terminal (MacOS):
 python3 main.py < in
 """
 # Start, Part 1, Part 2
