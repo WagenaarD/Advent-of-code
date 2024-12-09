@@ -18,14 +18,14 @@ from collections import defaultdict, deque, Counter
 import re
 import numpy as np
 from pprint import pprint
-from functools import cache
+from functools import cache, reduce
 import math
 from pprint import pprint
 
 
 @print_function
-def part_one(input: str) -> int:
-    lines = input.split('\n')
+def part_one(input_txt: str) -> int:
+    lines = input_txt.split('\n')
 
 
 
@@ -34,14 +34,14 @@ def part_one(input: str) -> int:
 
 
 @print_function
-def part_two(input: str) -> int:
-    lines = input.split('\n')
+def part_two(input_txt: str) -> int:
+    lines = input_txt.split('\n')
 @print_function
-def main(input: str) -> tuple[int, int]:
+def main(input_txt: str) -> tuple[int, int]:
     return (
-        part_one(input), 
-        part_two(input)
+        part_one(input_txt), 
+        part_two(input_txt)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+aoc_run(__name__, __file__, main, AOC_ANSWER)
 
 

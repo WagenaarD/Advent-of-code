@@ -1,5 +1,6 @@
 """
 Runs all days from an Advent Of Code year
+python3 ../aoc_tools/run_all.py <YEAR> <ITERATIONS> <PLOT y/n>
 """
 
 import os, importlib, sys, datetime, numpy, math
