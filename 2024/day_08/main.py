@@ -39,22 +39,14 @@ def main(input: str) -> tuple[int, int]:
     # Determine antinodes
     antinodes_p1, antinodes_p2 = set(), set()
     for positions in antennas.values():
-        for pos1, pos2 in it.combinations(positions, 2):
-            diff = tuple(x2 - x1 for x1, x2 in zip(pos1, pos2))
-            # part 1
-            for sign in (-1, 2):
-                antinode = tuple(x1 + sign * (x2 - x1) for x1, x2 in zip(pos1, pos2))
-                if antinode[0] in range(nrows) and antinode[1] in range(ncols):
-                    antinodes_p1.add(antinode)
-            # part 2
-            for idx, step in ((-1, -1), (0, 1)):
-                while True:
-                    npos = tuple(x1 + idx * dx for x1, dx in zip(pos1, diff))
-                    if npos[0] in range(nrows) and npos[1] in range(ncols):
-                        antinodes_p2.add(npos)
-                        idx += step
-                    else:
-                        break
+        for cur_pos, other_pos in it.permutations(positions, 2):
+            for step in it.count():
+                new_pos = tuple(x1 + step * (x1 - x2) for x1, x2 in zip(cur_pos, other_pos))
+                if not (new_pos[0] in range(nrows) and new_pos[1] in range(ncols)):
+                    break
+                if step == 1:
+                    antinodes_p1.add(new_pos)
+                antinodes_p2.add(new_pos)
     
     # Print the grid for the example:
     if nrows == 12: 
@@ -64,6 +56,6 @@ def main(input: str) -> tuple[int, int]:
         visualize(antennas, antinodes_p2, nrows, ncols)
     return len(antinodes_p1), len(antinodes_p2)
 
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+aoc_run(__name__, __file__, main, AOC_ANSWER)
 
 
