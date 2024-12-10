@@ -3,27 +3,13 @@ Advent of code challenge
 To run code, copy to terminal (MacOS):
 python3 main.py < in
 """
-# Start, Part 1, Part 2
 
-AOC_ANSWER = (501, None)
+AOC_ANSWER = (501, 1017)
 
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import print_loop
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict, deque, Counter
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache, reduce
-import math
-from pprint import pprint
-
-
-
 
 DIRS = [
     (-1, 0),
@@ -34,70 +20,43 @@ DIRS = [
 
 
 @print_function
-def part_one(input_txt: str) -> int:
-    grid = input_txt.split('\n')
-    grid = [[int(char) for char in row] for row in grid]
-    nrows, ncols = len(grid), len(grid[0])
-    zeros = [(r, c) for r, row in enumerate(grid) for c, char in enumerate(row) if char == 0]
-    score = 0
-    for pos in zeros:
-        seen = {pos}
-        qeue = deque([pos])
+def main(input_txt: str) -> tuple[int, int]:
+    """
+    Finds all paths from any 0 to any 9 and stores its start and end positions. Part 1 asks for the 
+    number of unique 0-9 connections and part 2 the total number of connections.
+    Since we only take paths with increasing height, we don't need to keep track of where we have 
+    been. 
+    """
+    grid: dict[tuple[int, int], int] = {(r, c): int(char) for r, row in enumerate(input_txt.split('\n')) for c, char in enumerate(row)}
+    nrows, ncols = input_txt.count('\n')+1, input_txt.find('\n')
+    zeros: list[tuple[int, int]] = [pos for pos, char in grid.items() if char == 0]
+    
+    # connections is a list of all zero-nine connections. It contains tuples (zero_pos, nine_pos)
+    connections: list[tuple[int, int]] = []
+    for zero_pos in zeros:
+        pos = zero_pos
+        qeue = [pos]
         while qeue:
             pos = qeue.pop()
+            # Look for directions in the 4 cardinal directions
             for dpos in DIRS:
+                # npos is the next position (npos = pos + dpos for all axes)
                 npos = tuple(x + dx for x, dx in zip(pos, dpos))
+                # If out of bounds, skip this npos
                 if not (npos[0] in range(nrows) and npos[1] in range(ncols)):
                     continue
-                if npos in seen:
+                # We only consider paths with increasing height
+                if grid[npos] != grid[pos] + 1:
                     continue
-                if grid[npos[0]][npos[1]] == grid[pos[0]][pos[1]] + 1:
-                    seen.add(npos)
-                    if grid[npos[0]][npos[1]] == 9:
-                        score += 1
-                    else:
-                        qeue.append(npos)
-    return score
-                    
+                # If we arrive at a peak, we store the result
+                if grid[npos] == 9:
+                    connections.append((zero_pos, npos))
+                # If not a peak, we want to walk this path further
+                else:
+                    qeue.append(npos)
+    return len(set(connections)), len(connections)
 
 
-
-
-def dfs(pos, grid, nrows, ncols):
-    score = 0
-    for dpos in DIRS:
-        npos = tuple(x + dx for x, dx in zip(pos, dpos))
-        if not (npos[0] in range(nrows) and npos[1] in range(ncols)):
-            continue
-        if grid[npos[0]][npos[1]] == grid[pos[0]][pos[1]] + 1:
-            if grid[npos[0]][npos[1]] == 9:
-                score += 1
-            else:
-                score += dfs(npos, grid, nrows, ncols)
-    return score
-
-
-
-
-@print_function
-def part_two(input_txt: str) -> int:
-    grid = input_txt.split('\n')
-    grid = [[int(char) for char in row] for row in grid]
-    nrows, ncols = len(grid), len(grid[0])
-    zeros = [(r, c) for r, row in enumerate(grid) for c, char in enumerate(row) if char == 0]
-    
-    score = 0
-    for pos in zeros:
-        score += dfs(pos, grid, nrows, ncols)
-    return score
-    
-
-@print_function
-def main(input_txt: str) -> tuple[int, int]:
-    return (
-        part_one(input_txt), 
-        part_two(input_txt)
-    )
 aoc_run(__name__, __file__, main, AOC_ANSWER)
 
 
