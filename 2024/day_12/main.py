@@ -17,6 +17,7 @@ from aoc_tools import print_function, aoc_run
 
 DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
+
 def find_plants(r: int, c: int, grid: list[str], nrows: int, ncols: int) -> set[tuple[int, int]]:
     target_value = grid[r][c]
     qeue = [(r, c)]
@@ -33,43 +34,61 @@ def find_plants(r: int, c: int, grid: list[str], nrows: int, ncols: int) -> set[
     return seen
 
 
-# def get_fences(plants, grid, nrows, ncols):
-#     fences = 0
-#     for r, c in plants:
-#         for dr, dc in DIRS:
-#             nr, nc = r + dr, c + dc
-#             if not (nr in range(nrows) and nc in range(ncols) and grid[nr][nc] == grid[r][c]):
-#                 fences += 1
-#     return fences
+def get_fences(plants, grid, nrows, ncols):
+    """
+    Old
+    """
+    fences = 0
+    for r, c in plants:
+        for dr, dc in DIRS:
+            nr, nc = r + dr, c + dc
+            if not (nr in range(nrows) and nc in range(ncols) and grid[nr][nc] == grid[r][c]):
+                fences += 1
+    return fences
 
-# I can't figure out why this didn't work. It gave the correct output for all five example inputs...
-# def get_sides(plants: list[tuple[int, int]]) -> int:
-#     return get_1D_sides(plants, True) + get_1D_sides(plants, False)
+def get_sides(plants: list[tuple[int, int]]) -> int:
+    """
+    Old
+    Determines the number of sides. Calls get_1D_sides twice (horizontally and vertically).
+    """
+    return get_1D_sides(plants, True) + get_1D_sides(plants, False)
 
-# def get_1D_sides(plants: list[tuple[int, int]], horizontal: bool = True) -> int:
-#     if horizontal:
-#         flip = lambda x: x
-#     else:
-#         flip = lambda x: (x[1], x[0])
-#     rows = set(flip(pos)[0] for pos in plants)
-#     cols = set(flip(pos)[1] for pos in plants)
-#     sides = 0
-#     for r in range(min(rows), max(rows)+2):
-#         in_fence, out_fence = False, False
-#         for c in range(min(cols), max(cols)+1):
-#             point = flip((r, c))
-#             up_point = flip((r-1, c))
-#             if (point in plants) and not up_point in plants:
-#                 if not in_fence:
-#                     sides += 1
-#                 in_fence = True
-#             elif (up_point in plants) and not point in plants:
-#                 if not out_fence:
-#                     sides += 1
-#                 out_fence = True
-#             else:
-#                 in_fence, out_fence = False, False
-#     return sides
+def get_1D_sides(plants: list[tuple[int, int]], horizontal: bool = True) -> int:
+    """
+    Old
+    Checks for sides between rows. Seperately checks whether there are fences slightly above 
+    (above_fence) or slighlty below (below_fence) the current line. When r = n, the line between 
+    cells of row n and n-1 are checked. Therefore we need to iterate between 0 and n_rows + 1 
+    (including). 
+    Only counts a fence as a new side if the previously checked cell did not have the same fence.
+    The script can be called for horizontal=false, which will flip the rows and columns so that it 
+    detects vertical sides.
+    """
+    if horizontal:
+        flip = lambda x: x
+    else:
+        flip = lambda x: (x[1], x[0])
+    rows = set(flip(pos)[0] for pos in plants)
+    cols = set(flip(pos)[1] for pos in plants)
+    sides = 0
+    for r in range(min(rows), max(rows)+2):
+        below_fence, above_fence = False, False
+        for c in range(min(cols), max(cols)+1):
+            point = flip((r, c))
+            up_point = flip((r-1, c))
+            if (up_point in plants) and not point in plants:
+                if not above_fence:
+                    sides += 1
+                above_fence = True
+            else:
+                above_fence = False
+            if (point in plants) and not up_point in plants:
+                if not below_fence:
+                    sides += 1
+                below_fence = True
+            else:
+                below_fence = False
+    return sides
 
 
 
@@ -86,7 +105,6 @@ def get_fences_and_corners(plants: list[tuple[int, int]]) -> int:
     gap ib twi adhacebt cardinal directions but there is a gap diagonally. Another way to define
     outer and inner corners is by imaging the fence traveling from the top left A along the top to 
     the right. The fence will turn right at an outer corner and left at an inner corner.
-
     """
     fences, corners = 0, 0
     for r, c in plants:
@@ -121,7 +139,6 @@ def main(input_txt: str) -> tuple[int, int]:
             # fences = get_fences(plants, grid, nrows, ncols)
             # sides = get_sides(plants)
             plots.append((val, area, fences, sides))
-    
     p1, p2 = 0, 0
     for val, area, fences, sides in plots:
         p1 += area * fences
