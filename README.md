@@ -4,7 +4,7 @@ to write solutions which strike a balance between fast, readable and concise. I 
 the older problems. 
 
 ## Solutions by year (Python)
-#### 2015: 47 ⭐
+#### 2015: 50 ⭐
 #### 2016: -
 #### 2017: -
 #### 2018: -

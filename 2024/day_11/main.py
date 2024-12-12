@@ -5,69 +5,64 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (200446, 238317474993392)
+AOC_ANSWER = (200_446, 238_317_474_993_392)
 
 import sys
 from pathlib import Path
+from collections import defaultdict
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from collections import defaultdict
 
-            
-print_function
-def solve(input_txt: str, nsteps: int = 75) -> int:
+MULTIPLICATION_FACTOR = 2024
+PART_ONE_STEPS = 25
+PART_TWO_STEPS = 75
+
+
+def solve(input_txt: str, nsteps: int = PART_TWO_STEPS) -> int:
     """
-    Processes the following rules:
-    1. If the stone is engraved with the number 0, it is replaced by a stone engraved with the 
-            number 1.
-    2. If the stone is engraved with a number that has an even number of digits, it is 
-            replaced by two stones. The left half of the digits are engraved on the new left 
-            stone, and the right half of the digits are engraved on the new right stone. 
-            (The new numbers don't keep extra leading zeroes: 1000 would become stones 10 and 0.)
-    3. If none of the other rules apply, the stone is replaced by a new stone; the old 
-            stone's number multiplied by 2024 is engraved on the new stone.
-    
-    For part one (25 iterations) I initially stored stones as a list of stones, but that was too 
-    slow for part 2 (75 iterations). When trying the calculations manually I figured out that the 
-    order of stones doesnt matter and certain values are repeated so that it might be more efficient
-    to store a counter of all types of stones. This turned out to be very fast (<0.1s).
+    Simulates the transformations on stones according to the problem's rules:
+    1. Stone with number 0 → replaced by stone engraved with 1.
+    2. Stone with even number of digits → replaced by two stones:
+       - Left and right halves of the digits engraved on separate stones.
+    3. Stone with odd number of digits → replaced by one stone with the
+       number multiplied by MULTIPLICATION_FACTOR.
+
+    Args:
+        input_txt (str): A string of space-separated integers representing stones.
+        nsteps (int): Number of iterations of transformations.
+
+    Returns:
+        int: Total number of stones after all transformations.
     """
     stones_lst = tuple(map(int, input_txt.split()))
     stones = {key: stones_lst.count(key) for key in set(stones_lst)}
+
     for _ in range(nsteps):
-        nstones = defaultdict(int)
-        for stone, stone_count in stones.items():
+        new_stones = defaultdict(int)
+        for stone, count in stones.items():
             if stone == 0:
-                nstones[1] += stone_count
-            elif len(stone_str := str(stone))%2==0:
-                nstones[int(stone_str[:len(stone_str)//2])] += stone_count
-                nstones[int(stone_str[len(stone_str)//2:])] += stone_count
+                new_stones[1] += count
             else:
-                nstones[stone*2024] += stone_count
-        stones = nstones
-    return sum(nstones.values())
+                stone_str = str(stone)
+                if len(stone_str) % 2 == 0:
+                    # Split the digits and distribute the counts
+                    left = int(stone_str[:len(stone_str) // 2])
+                    right = int(stone_str[len(stone_str) // 2:])
+                    new_stones[left] += count
+                    new_stones[right] += count
+                else:
+                    # Multiply by the factor
+                    new_stones[stone * MULTIPLICATION_FACTOR] += count
+        stones = new_stones
 
-            
-
-
-
-
+    return sum(stones.values())
 
 
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
     return (
-        solve(input_txt, 25), 
-        solve(input_txt, 75)
+        solve(input_txt, PART_ONE_STEPS), 
+        solve(input_txt, PART_TWO_STEPS)
     )
 aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
-# 0
-# 1
-# 2024
-# 20 24
-# 2 * 2 4
-# 4048 * 4048 8096
-# 40 48 * 40 48 80 96
-# 4 * 4 8 * 4 * 4 8
