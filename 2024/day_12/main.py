@@ -128,8 +128,8 @@ def main(input_txt: str) -> tuple[int, int]:
     nrows, ncols = len(grid), len(grid[0])
     seen = set()
     plots = []
-    for r, row in enumerate(grid):
-        for c, val in enumerate(row):
+    for r in range(nrows):
+        for c in range(ncols):
             if (r, c) in seen:
                 continue
             plants = find_plants(r, c, grid, nrows, ncols)
@@ -138,9 +138,9 @@ def main(input_txt: str) -> tuple[int, int]:
             fences, sides = get_fences_and_corners(plants)
             # fences = get_fences(plants, grid, nrows, ncols)
             # sides = get_sides(plants)
-            plots.append((val, area, fences, sides))
+            plots.append((area, fences, sides))
     p1, p2 = 0, 0
-    for val, area, fences, sides in plots:
+    for area, fences, sides in plots:
         p1 += area * fences
         p2 += area * sides
     return p1, p2
