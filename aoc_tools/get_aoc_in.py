@@ -1,6 +1,6 @@
 """
 Move to the directory of the appropriate day and run with the following command:
-python3 ../_utils/get_aoc_in.py
+python3 ../../aoc_tools/get_aoc_in.py
 
 Will retreive the input file
 
