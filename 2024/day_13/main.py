@@ -16,10 +16,10 @@ from fractions import Fraction
 
 PART_2_INCREMENT = 10000000000000
 
-
 @print_function
 def part_one(input_txt: str) -> int:
     """
+    Old
     Calculates the number of required A and B button presses and the corresponding coin cost. The 
     cost of an A-press is 3 and B-press is 1. No more than 100 presses are allowed per button.
     If no solution is possible, 0 cost is stored.
@@ -40,36 +40,37 @@ def part_one(input_txt: str) -> int:
 
 
 @print_function
-def part_two(input_txt: str, increment: int = PART_2_INCREMENT, max_steps = None) -> int:
+def solve(input_txt: str, increment: int, max_steps: int) -> int:
     """
     Analytical solver for the required number of button presses.
-    For each A (ax, ay) and B (bx, by) there are a C (cx, cy=0) and D (dx=0, dy) which are expressed 
-    as linear functions of A and B with cy = 0 and dx = 0. It is easy to find the number of button 
-    presses of C and D which can then be used to calculate button presses of A and B.
+
     When numbers get large, float errors can occur. That's why I use Fraction which is exact even 
     though it is slower.
+    
+    Quickest way to the answer is using:
+        px = ax*A + bx*B (1)
+        py = ay*A + by*B (2)
+        A = (px-bx*B)/ax (3)
+    Inserting (3) into (2) gives:
+        ay*(px-bx*B)/ax + by*B = py
+        ay*px/ax-ay*bx/ax*B+by*B = py
+        (by-aybx/ax)*B=py-ay*px/ax
+        B = (py-ay*px/ax)/(by-ay*bx/ax)
+        B = (ax*py-ay*px)/(ax*by/ay*bx) (4)
+    Similarly, one gets:
+        A = (ax*py-ay*px)/(ax*by-ay*bx) (5)
     """
-    input_blocks = input_txt.split('\n\n')
     ans = 0
-    for block in input_blocks:
+    for block in input_txt.split('\n\n'):
         ax, ay, bx, by, px, py = map(int, re.findall('-?\\d+', block))
         px += increment
         py += increment
-        ## Define C and D along the x-axis and y-axis respectively
-        # C = A - ay/by * B
-        # D = A - ax/bx * B
-        cx = ax - Fraction(ay*bx, by)
-        dy = ay - Fraction(ax*by, bx)
-        c_steps = px / cx
-        d_steps = py / dy
-        # Calculate a_steps from the sum of c and d, then calculate b_steps using the residual x.
-        a_steps = c_steps + d_steps
-        b_steps = (c_steps * cx - a_steps * ax) / bx
+        # Using math we can find the answer directly
+        a_steps = Fraction(bx*py-by*px, ay*bx-ax*by)
+        b_steps = Fraction(ax*py-ay*px, ax*by-ay*bx)
         # We can only take integer steps and they should be positive
-        valid = all(step.is_integer() and step > 0 for step in (a_steps, b_steps))
-        if max_steps:
-            valid = valid and all(step < max_steps for step in (a_steps, b_steps))
-        if valid:
+        valid = all(step <= max_steps for step in (a_steps, b_steps)) if max_steps else True
+        if valid and all(step.is_integer() and step >= 0 for step in (a_steps, b_steps)):
             ans += int(round(3*a_steps + b_steps))
     return ans
 
@@ -77,9 +78,8 @@ def part_two(input_txt: str, increment: int = PART_2_INCREMENT, max_steps = None
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
     return (
-        part_one(input_txt), 
-        # part_two(input_txt, 0, 100), # = part one 
-        part_two(input_txt),
+        solve(input_txt, 0, 100),
+        solve(input_txt, PART_2_INCREMENT, None),
     )
 aoc_run(__name__, __file__, main, AOC_ANSWER)
 
