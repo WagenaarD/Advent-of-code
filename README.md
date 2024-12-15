@@ -4,16 +4,16 @@ to write solutions which strike a balance between fast, readable and concise. I 
 the older problems. 
 
 ## Solutions by year (Python)
-#### 2015: 50 ⭐
-#### 2016: -
-#### 2017: -
-#### 2018: -
-#### 2019: -
-#### 2020: 14 ⭐
-#### 2021: -
-#### 2022: 50 ⭐
-#### 2023: 50 ⭐
-#### 2024: In progress
+#### 2015: 50 ⭐ (Christmas)
+#### 2016: - (Easter bunny)
+#### 2017: - (Naughty or nice)
+#### 2018: - (Anomolies)
+#### 2019: - (Space)
+#### 2020: 16 ⭐ (Vacation)
+#### 2021: - (Deep sea)
+#### 2022: 50 ⭐ (Jungle)
+#### 2023: 50 ⭐ (Snow)
+#### 2024: 30 ⭐ (History)
 
 ## Links:
 - [adventofcode.com](https://adventofcode.com/)
