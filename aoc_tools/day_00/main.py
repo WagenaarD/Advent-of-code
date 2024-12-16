@@ -5,13 +5,11 @@ python3 main.py < in
 """
 # Start, Part 1, Part 2
 
-AOC_ANSWER = (None, None)
-
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import print_loop, tuple_add
+from aoc_tools import print_loop, tuple_add, tuple_mult, Tup
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict, deque, Counter
@@ -21,6 +19,9 @@ from pprint import pprint
 from functools import cache, reduce
 import math
 from pprint import pprint
+import heapq
+
+AOC_ANSWER = (None, None)
 
 
 @print_function
