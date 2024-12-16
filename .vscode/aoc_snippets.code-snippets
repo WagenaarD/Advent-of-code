@@ -1,0 +1,76 @@
+{
+    "aoc datetimestamp": {
+        "prefix": "aoc datetimestamp",
+        "body": [
+            "$CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+        ]
+    },
+
+    "aoctimestamp": {
+        "prefix": "aoctimestamp",
+        "body": [
+            "# $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+        ]
+    },
+
+    "ADJ4": {
+        "prefix": "ADJ4",
+        "body": [
+            "DIRS = [Tup(elem) for elem in [(-1, 0), (0, 1), (1, 0), (0, -1)]]",
+        ]
+    },
+    "ADJ8": {
+        "prefix": "ADJ8",
+        "body": [
+            "DIRS = [Tup(elem) for elem in [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]]",
+        ]
+    },
+    "dims": {
+        "prefix": "dims",
+        "body": [
+            "nrows, ncols = len(grid), len(grid[0])",
+            "# nrows, ncols = input_txt.count('\\n')+1, input_txt.find('\\n')",
+        ]
+    },
+    "grid_loop": {
+        "prefix": "grid_loop",
+        "body": [
+            "nrows, ncols = len(grid), len(grid[0])",
+            "for r, row in enumerate(grid):",
+            "    for c, val in enumerate(row):",
+            "        if not (r in range(nrows) and c in range(ncols)):",
+            "            continue",
+            "        ",
+        ]
+    },    
+    "dijkstra": {
+        "prefix": "Dijkstra",
+        "body": [
+            "# Dijkstra: Create qeue, first item should be cost to minimize, rest should indicate state. A",
+            "# state is defined as unique positions and/or directions",
+            "qeue = [(0, start, DIRS[1])]",
+            "# Dijkstra: Create seen as a dict with the lowest cost to get to states",
+            "seen = {(start, DIRS[1]): 0}",
+            "# Dijkstra: Start while loop for qeue",
+            "while qeue:",
+            "    # Dijkstra: Get the stack item with the lowest score using heappop",
+            "    cost, pos, dir = heapq.heappop(qeue)",
+			"    if (pos, dir) in seen and cost >= seen[(pos, dir)]:",
+			"        continue",
+            "    seen[(pos, dir)] = cost",
+            "    # Dijkstra: Add all adjacent states to the qeue",
+            "    for ndir in DIRS:",
+            "        if dir == ndir:",
+            "            npos = pos + dir",
+            "            ncost = cost + 1",
+            "        elif dir * ndir == (0, 0):",
+            "            npos = pos",
+            "            ncost = cost + 1000",
+            "        else:",
+            "            continue",
+            "        if (npos, ndir) not in seen and npos not in walls:",
+            "            heapq.heappush(qeue, (ncost, npos, ndir))",
+            "    ]",
+        ]
+    },    
+}
