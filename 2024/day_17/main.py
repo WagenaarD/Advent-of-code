@@ -13,39 +13,36 @@ import re
 AOC_ANSWER = ('1,5,7,4,1,6,0,3,0', 108107574778365)
 
 
-def solve(A, program, first=False):
+def solve(A: int, program: list[int]):
+    """
+    Generates the output for a given program and A value. If only_first is True, only the first 
+    output will be generated.
+    Felt like being fancy so I made a generator.
+    """
     B, C, idx = 0, 0, 0
-    output = []
     while idx < len(program):
         opcode = program[idx]
         operand = program[idx+1]
-        if operand < 4:
-            combo_operand = operand
-        elif operand < 7:
-            combo_operand = [A, B, C][operand-4]
-        else:
-            combo_operand = None
-        if opcode == 0: # adv
-            A = A // (2**combo_operand)
-        elif opcode == 1:
-            B = B ^ operand
-        elif opcode == 2:
-            B = combo_operand % 8
-        elif opcode == 3:
-            if A != 0:
-                idx = operand - 2
-        elif opcode == 4:
-            B = B ^ C
-        elif opcode == 5: # out
-            if first:
-                return combo_operand % 8
-            output.append(combo_operand % 8)
-        elif opcode == 6: # bdv
-            B = A // (2**combo_operand)
-        elif opcode == 7: # cdv
-            C = A // (2**combo_operand)
+        combo_operand = [0, 1, 2, 3, A, B, C][operand]
+        match opcode:
+            case 0:
+                A >>= combo_operand
+            case 1:
+                B = B ^ operand
+            case 2:
+                B = combo_operand % 8
+            case 3:
+                if A:
+                    idx = operand - 2
+            case 4:
+                B = B ^ C
+            case 5:
+                yield combo_operand % 8
+            case 6:
+                B = A >> combo_operand
+            case 7:
+                C = A >> combo_operand
         idx += 2
-    return output
 
 
 @print_function
@@ -53,10 +50,8 @@ def part_one(input_txt: str) -> int:
     """
     We're asked to apply a sequence of operations on a number.
     """
-    register, program = input_txt.split('\n\n')
-    register = {key: int(val) for key, val in zip('ABC', re.findall('\\d+', register))}
-    program = list(map(int, re.findall('\\d+', program)))
-    return ','.join(map(str, solve(register['A'], program)))
+    A, _, _, *program = map(int, re.findall('\\d+', input_txt))
+    return ','.join(map(str, solve(A, program)))
 
 
 @print_function
@@ -72,21 +67,20 @@ def part_two(input_txt: str) -> int:
     We can calculate reversely. Try which value of 0-7 gives us the last program item, then shift 
     the answer left three bits and find the second to last program item, etc.
     """
-    _, program_txt = input_txt.split('\n\n')
-    program = list(map(int, re.findall('\\d+', program_txt)))
+    _, _, _, *program = map(int, re.findall('\\d+', input_txt))
     qeue = [(0, 0)]
     answers = []
     while qeue:
         ans, depth = qeue.pop()
         depth -= 1
         if depth == -len(program)-1:
-            if solve(ans, program) == program:
+            if list(solve(ans, program)) == program:
                 answers.append(ans)
             continue
         ans <<= 3
         target = program[depth]
         for idx in range(8):
-            if solve(ans + idx, program, True) == target:
+            if next(solve(ans + idx, program)) == target:
                 qeue.append((ans + idx, depth))
     return min(answers)
 
