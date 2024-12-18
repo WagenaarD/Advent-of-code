@@ -9,7 +9,7 @@ the older problems.
 #### 2017: - (Naughty or nice)
 #### 2018: - (Anomolies)
 #### 2019: - (Space)
-#### 2020: 24 ⭐ (Vacation)
+#### 2020: 26 ⭐ (Vacation)
 #### 2021: - (Deep sea)
 #### 2022: 50 ⭐ (Jungle)
 #### 2023: 50 ⭐ (Snow)
