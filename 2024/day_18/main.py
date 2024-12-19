@@ -3,55 +3,35 @@ Advent of code challenge
 To run code, copy to terminal (MacOS):
 python3 main.py < in
 """
-# Start, Part 1, Part 2
 
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run, Tup
+from collections import deque
+
 
 AOC_ANSWER = (446, '39,40')
 DIRS = list(map(Tup, [(-1, 0), (0, 1), (1, 0), (0, -1)]))
 
-def visualize(bytes, width, height):
+def visualize(bytes: list[Tup], width: int, height: int) -> None:
     """Prints the grid for the example input"""
-    out = []
     for r in range(height):
         row = []
         for c in range(width):
-            if Tup((r, c)) in bytes:
-                row.append('#')
-            else:
-                row.append('.')
-        out.append(''.join(row))
-    out_txt = '\n'.join(out)
-    print(out_txt)
-    
+            row.append('#' if Tup((r, c)) in bytes else '.')
+        print(''.join(row))
 
 
 @print_function
-def part_one(input_txt: str) -> int:
-    """
-    Does a simple broad-first-search (BFS) to find the shortest path to the exit.
-    """
-    # Parse input
-    is_example = input_txt.count('\n') < 1000
-    if is_example:
-        width, height, step = 7, 7, 12
-    else:
-        width, height, step = 71, 71, 1024
-    bytes = []
-    for line in input_txt.split('\n'):
-        c, r = map(int, line.split(','))
-        bytes.append(Tup((r, c)))
-    if is_example: visualize(bytes[:step], width, height)
-    # Start BFS
+def part_one(bytes: list[Tup], width: int, height: int, step: int, is_example: bool) -> int:
+    """Simple BFS to find the shortest path."""
     end = Tup((height-1, width-1))
-    qeue = [(0, Tup((0, 0)))]
+    qeue = deque([(0, Tup((0, 0)))])
     seen = set()
     walls = set(bytes[:step])
     while qeue:
-        cost, pos = qeue.pop(0)
+        cost, pos = qeue.popleft()
         for dpos in DIRS:
             npos = pos + dpos
             if npos[0] in range(height) and npos[1] in range(width):
@@ -60,31 +40,19 @@ def part_one(input_txt: str) -> int:
                         return cost+1
                     qeue.append((cost+1, npos))
                     seen.add(npos)
-    return None
+    return -1
 
 
 @print_function
-def part_two(input_txt: str) -> int:
+def part_two(bytes: list[Tup], width: int, height: int) -> int:
     """
     Start by calculating all accessible locations when all blocks have fallen. Then remove them one 
     by one untill a path is visible. Each time a block is lifted, the set of accessible locations 
     from the last step is reused and expanded if the block is next to an accessible location. 
     """
-    # Parse input
-    is_example = input_txt.count('\n') < 1000
-    if is_example:
-        width, height = 7, 7
-    else:
-        width, height = 71, 71
-    bytes = []
-    for line in input_txt.split('\n'):
-        c, r = map(int, line.split(','))
-        bytes.append(Tup((r, c)))
-    # Prepare our BFS
     end = Tup((height-1, width-1))
     seen = {Tup((-1, 0))}
     bytes.append(Tup((0, 0)))
-    # Remove one wall at a time untill we find a path
     while end not in seen:
         last_byte = bytes.pop()
         for dpos in DIRS:
@@ -93,10 +61,10 @@ def part_two(input_txt: str) -> int:
                 break
         else:
             continue
-        qeue = [last_byte]
+        qeue = deque([last_byte])
         walls = set(bytes)
         while qeue:
-            pos = qeue.pop(0)
+            pos = qeue.popleft()
             for dpos in DIRS:
                 npos = pos + dpos
                 if npos[0] in range(height) and npos[1] in range(width) and \
@@ -108,9 +76,22 @@ def part_two(input_txt: str) -> int:
     
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
+    """Parses input then runs part one and two"""
+    is_example = input_txt.count('\n') < 1000
+    if input_txt.count('\n') < 1000:
+        width, height, step = 7, 7, 12
+    elif input_txt.count('\n') < 10_000:
+        width, height, step = 71, 71, 1024
+    else: # Extra input from reddit
+        width, height, step = 213, 213, 1024
+    bytes = []
+    for line in input_txt.split('\n'):
+        c, r = map(int, line.split(','))
+        bytes.append(Tup((r, c)))
+    
     return (
-        part_one(input_txt), 
-        part_two(input_txt)
+        part_one(bytes, width, height, step, is_example), 
+        part_two(bytes, width, height)
     )
 aoc_run(__name__, __file__, main, AOC_ANSWER)
 

@@ -3,7 +3,6 @@ Advent of code challenge
 To run code, copy to terminal (MacOS):
 python3 main.py < in
 """
-# Start, Part 1, Part 2
 
 import sys
 from pathlib import Path
