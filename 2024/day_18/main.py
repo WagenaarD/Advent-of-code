@@ -7,33 +7,37 @@ python3 main.py < in
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
-from aoc_tools import print_function, aoc_run, Tup
+from aoc_tools import print_function, aoc_run, tuple_add
 from collections import deque
 
 
 AOC_ANSWER = (446, '39,40')
-DIRS = list(map(Tup, [(-1, 0), (0, 1), (1, 0), (0, -1)]))
+DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
-def visualize(bytes: list[Tup], width: int, height: int) -> None:
+def visualize(bytes: list[tuple[int, int]], width: int, height: int) -> None:
     """Prints the grid for the example input"""
     for r in range(height):
         row = []
         for c in range(width):
-            row.append('#' if Tup((r, c)) in bytes else '.')
+            row.append('#' if (r, c) in bytes else '.')
         print(''.join(row))
 
 
 @print_function
-def part_one(bytes: list[Tup], width: int, height: int, step: int, is_example: bool) -> int:
+def part_one(bytes: list[tuple[int, int]], width: int, height: int, step: int, is_example: bool) -> int:
     """Simple BFS to find the shortest path."""
-    end = Tup((height-1, width-1))
-    qeue = deque([(0, Tup((0, 0)))])
+    end = (height-1, width-1)
+    qeue = deque([(0, (0, 0))])
     seen = set()
     walls = set(bytes[:step])
     while qeue:
         cost, pos = qeue.popleft()
         for dpos in DIRS:
-            npos = pos + dpos
+            try:
+                npos = tuple_add(pos, dpos)
+            except:
+                assert False
+
             if npos[0] in range(height) and npos[1] in range(width):
                 if npos not in seen and npos not in walls:
                     if npos == end:
@@ -44,19 +48,19 @@ def part_one(bytes: list[Tup], width: int, height: int, step: int, is_example: b
 
 
 @print_function
-def part_two(bytes: list[Tup], width: int, height: int) -> int:
+def part_two(bytes: list[tuple[int, int]], width: int, height: int) -> int:
     """
     Start by calculating all accessible locations when all blocks have fallen. Then remove them one 
     by one untill a path is visible. Each time a block is lifted, the set of accessible locations 
     from the last step is reused and expanded if the block is next to an accessible location. 
     """
-    end = Tup((height-1, width-1))
-    seen = {Tup((-1, 0))}
-    bytes.append(Tup((0, 0)))
+    end = (height-1, width-1)
+    seen = {(-1, 0)}
+    bytes.append((0, 0))
     while end not in seen:
         last_byte = bytes.pop()
         for dpos in DIRS:
-            if last_byte + dpos in seen:
+            if tuple_add(last_byte, dpos) in seen:
                 seen.add(last_byte)
                 break
         else:
@@ -66,7 +70,7 @@ def part_two(bytes: list[Tup], width: int, height: int) -> int:
         while qeue:
             pos = qeue.popleft()
             for dpos in DIRS:
-                npos = pos + dpos
+                npos = tuple_add(pos, dpos)
                 if npos[0] in range(height) and npos[1] in range(width) and \
                         npos not in seen and npos not in walls:
                     qeue.append(npos)
@@ -87,7 +91,7 @@ def main(input_txt: str) -> tuple[int, int]:
     bytes = []
     for line in input_txt.split('\n'):
         c, r = map(int, line.split(','))
-        bytes.append(Tup((r, c)))
+        bytes.append((r, c))
     
     return (
         part_one(bytes, width, height, step, is_example), 

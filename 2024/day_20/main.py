@@ -33,7 +33,7 @@ def main(input_txt: str) -> tuple[int, int]:
                 case '.' | 'E': 
                     unvisited.add((r, c))
                 case 'S':
-                    start = ((r, c))
+                    start = (r, c)
     # Find the entire path once.
     r, c = pos = start
     p1, p2 = 0, 0
@@ -42,7 +42,7 @@ def main(input_txt: str) -> tuple[int, int]:
         # Scan all positions within 20 steps from the current position
         for dr in range(-20, 21):
             for dc in range(-20+abs(dr), 21-abs(dr)):
-                nr, nc = npos = (r + dr, c + dc)
+                npos = (r + dr, c + dc)
                 # If the position is not yet visited, store the distance between the current 
                 # position and that position
                 if npos in unvisited:

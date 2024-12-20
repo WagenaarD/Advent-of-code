@@ -70,7 +70,7 @@ def solve(input_txt: str, increment: int, max_steps: int) -> int:
         b_steps = Fraction(ax*py-ay*px, ax*by-ay*bx)
         # We can only take integer steps and they should be positive
         valid = all(step <= max_steps for step in (a_steps, b_steps)) if max_steps else True
-        if valid and all(step.is_integer() and step >= 0 for step in (a_steps, b_steps)):
+        if valid and all(step.denominator == 1 and step >= 0 for step in (a_steps, b_steps)):
             ans += int(round(3*a_steps + b_steps))
     return ans
 

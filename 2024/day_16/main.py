@@ -10,11 +10,11 @@ AOC_ANSWER = (104516, 545)
 import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
-from aoc_tools import print_function, aoc_run, Tup
+from aoc_tools import print_function, aoc_run, tuple_add, tuple_mult
 import heapq
 
 
-DIRS = [Tup((-1, 0)), Tup((0, 1)), Tup((1, 0)), Tup((0, -1))]
+DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
@@ -25,11 +25,11 @@ def main(input_txt: str) -> tuple[int, int]:
     for r, line in enumerate(input_txt.split('\n')):
         for c, char in enumerate(line):
             if char == 'S':
-                start = Tup((r, c))
+                start = (r, c)
             elif char == 'E':
-                end = Tup((r, c))
+                end = (r, c)
             elif char == '#':
-                walls.add(Tup((r, c)))
+                walls.add((r, c))
     
     # Dijkstra: Create qeue, first item should be cost to minimize
     # For part 1, use Dijkstra's algorithm to calculate the shortest path to any state. A state is 
@@ -45,9 +45,9 @@ def main(input_txt: str) -> tuple[int, int]:
         # Dijkstra: Add all new positions
         for ndir in DIRS:
             if dir == ndir:
-                npos = pos + dir
+                npos = tuple_add(pos, dir)
                 ncost = cost + 1
-            elif dir * ndir == (0, 0):
+            elif tuple_mult(dir, ndir) == (0, 0):
                 npos = pos
                 ncost = cost + 1000
             else:
@@ -64,7 +64,7 @@ def main(input_txt: str) -> tuple[int, int]:
         cost, pos, dir = qeue.pop()
         best_positions.add(pos)
         # 1: Move one backward
-        npos = pos - dir
+        npos = tuple_add(pos,  tuple_mult(dir, -1))
         if (npos, dir) in seen:
             if seen[(npos, dir)] == cost-1:
                 qeue.append((cost-1, npos, dir))
