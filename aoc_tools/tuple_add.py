@@ -33,7 +33,10 @@ def tuple_add(first: tuple[Number, Number], second: tuple[Number, Number]) -> tu
     """
     return (first[0] + second[0], first[1] + second[1])
 
-def tuple_mult(first, second):
+def tuple_sub(first: tuple[Number, Number], second: tuple[Number, Number]) -> tuple[Number, Number]:
+    return (first[0] - second[0], first[1] - second[1])
+
+def tuple_mult(first: tuple[Number, Number], second: tuple[Number, Number]) -> tuple[Number, Number]:
     """
     Performs element-wise multiplication of a tuples and a constant factor
     """
