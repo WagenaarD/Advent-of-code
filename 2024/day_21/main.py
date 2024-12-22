@@ -41,16 +41,15 @@ DIRPAD_POS = {
     '>': (1, 2),
 }
 
-
 @cache
 def generic_keypad(target: str, start: str, is_directional: bool) -> list[tuple[str]]:
     """
-    Calculates all possible options (= a tuple of strings with each string equal to <, >, ^ or v) 
+    Calculates all possible options (= a tuple of strings with each string equal to <, >, ^ or v)
     which would result in a button press of target (= a string indicating the button to press) when
     the current position is start (= a string indicating the button previously pressed).
 
-    This function allows for two designs, the directional keypad (is_directional = True) and 
-    numerical keypad (=False). The only differences are the key to coordinate layour (dir_dict) and 
+    This function allows for two designs, the directional keypad (is_directional = True) and
+    numerical keypad (=False). The only differences are the key to coordinate layour (dir_dict) and
     the coordinate through which travel is forbidden (forbidden).
 
     Numerical keypad             Directional keypad
@@ -69,10 +68,10 @@ def generic_keypad(target: str, start: str, is_directional: bool) -> list[tuple[
     forbidden = (0, 0) if is_directional else (3, 0)
     target_pos = dir_dict[target]
     start_pos = dir_dict[start]
-    dpos = tuple_sub(target_pos, start_pos)    
+    dpos = tuple_sub(target_pos, start_pos)
     moves = ['v' for _ in range(dpos[0])] + ['^' for _ in range(-dpos[0])] \
         + ['>' for _ in range(dpos[1])] + ['<' for _ in range(-dpos[1])]
-    permutations = list({tuple(moves) + ('A',), tuple(reversed(moves)) + ('A',)})
+    permutations = [tuple(moves) + ('A',), tuple(reversed(moves)) + ('A',)]
     # Remove paths travelling through the forbidden coordinate.
     if all(forbidden[idx] in (start_pos[idx], target_pos[idx]) for idx in range(2)):
         pos = start_pos
@@ -83,13 +82,13 @@ def generic_keypad(target: str, start: str, is_directional: bool) -> list[tuple[
                 break
         else:
             permutations.pop()
-    return permutations
+    return list(set(permutations))
 
 
 @cache
 def process_direction_press(target: str, source: str, depth: int) -> int:
     """
-    Calculates the minimally required number of steps to press a directional button on the final 
+    Calculates the minimally required number of steps to press a directional button on the final
     robot of a connected set of {depth} robots. Is called recursively.
     """
     # Calculate in how many way we can press the target at depth-1
@@ -110,16 +109,16 @@ def process_direction_press(target: str, source: str, depth: int) -> int:
 
 
 @cache
-def process_character(code, start = 'A', depth = 2):
+def process_character(code: str, start: str, depth: int) -> int:
     """
     Processes one character in the code. Depth indicates the number of directional keypads operating
     robots.
-    """    
+    """
     # Find the options for directional moves for the final robot
     key_press_options = [tuple()]
     for target in code:
         new_key_presses = generic_keypad(target, start, False)
-        key_press_options = [old_keys + new_keys for old_keys in key_press_options 
+        key_press_options = [old_keys + new_keys for old_keys in key_press_options
                              for new_keys in new_key_presses]
         start = target
     # Calculate the number of steps required for each of these directional options
@@ -133,7 +132,6 @@ def process_character(code, start = 'A', depth = 2):
         key_press_lengths.append(new_len)
     return min(key_press_lengths)
 
-@print_function
 def solve(input_txt: str, depth: int) -> int:
     """"""
     codes = input_txt.split('\n')
@@ -150,9 +148,7 @@ def solve(input_txt: str, depth: int) -> int:
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
     return (
-        solve(input_txt, 2), 
+        solve(input_txt, 2),
         solve(input_txt, 25)
     )
 aoc_run(__name__, __file__, main, AOC_ANSWER)
-
-

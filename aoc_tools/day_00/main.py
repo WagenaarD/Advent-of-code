@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import print_loop, tuple_add, tuple_mult, Tup
+from aoc_tools import print_loop, tuple_add, tuple_sub, tuple_mult, Pos
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict, deque, Counter

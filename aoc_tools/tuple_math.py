@@ -8,57 +8,97 @@ __version__   = '1.0.1'
 
 import operator
 from numbers import Number
+from typing import Union
 
-def tuple_add(first: tuple[Number, Number], second: tuple[Number, Number]) -> tuple[Number, Number]:
+Tuple2D = tuple[Number, Number]
+
+
+def tuple_add(first: Tuple2D, second: Tuple2D) -> Tuple2D:
     """
     Performs element-wise addition of multiple tuples.
 
-    This function takes any number of tuples as arguments and returns a new tuple 
-    where each element is the sum of the corresponding elements in the input tuples.
-    
+    Args:
+        *tuples: Any number of tuples with numeric elements to add.
+
+    Returns:
+        A tuple where each element is the sum of the corresponding elements in the input tuples.
+
     Example:
         >>> tuple_add((1, 2), (-1, 0))
         (0, 2)
-        >>> tuple_add((1, 2, 3), (4, 5, 6), (7, 8, 9))
-        (12, 15, 18)
-
-    Args:
-        *pos: Any number of tuples of the same length to be added element-wise.
-
-    Returns:
-        tuple: A tuple containing the element-wise sums of the input tuples.
-
-    Raises:
-        ValueError: If the input tuples are not of the same length.
     """
     return (first[0] + second[0], first[1] + second[1])
 
-def tuple_sub(first: tuple[Number, Number], second: tuple[Number, Number]) -> tuple[Number, Number]:
+def tuple_sub(first: Tuple2D, second: Tuple2D) -> Tuple2D:
+    """
+    Performs element-wise subtraction of two tuples.
+
+    Args:
+        first: The first numeric tuple.
+        second: The second numeric tuple.
+    
+    Example:
+        >>> tuple_sub((1, 2), (-1, 0))
+        (2, 2)
+
+    Returns:
+        A tuple where each element is the result of subtracting the corresponding elements.
+    """
     return (first[0] - second[0], first[1] - second[1])
 
-def tuple_mult(first: tuple[Number, Number], second: tuple[Number, Number]) -> tuple[Number, Number]:
+def tuple_mult(first: Tuple2D, second: Union[Tuple2D, Number]) -> Tuple2D:
     """
-    Performs element-wise multiplication of a tuples and a constant factor
+    Performs element-wise multiplication of a tuple with another tuple or a scalar.
+
+    Args:
+        first: A numeric tuple.
+        second: A numeric tuple of the same length as `first` or a scalar.
+    
+    Example:
+        >>> tuple_mult((1, 2), (-1, 0))
+        (-1, 0)
+        >>> tuple_mult((1, 2), 2)
+        (2, 4)
+
+    Returns:
+        A tuple where each element is the result of the multiplication.
     """
     if isinstance(second, tuple):
         return (first[0] * second[0], first[1] * second[1])
     else:
         return (first[0] * second, first[1] * second)
 
-def tuple_rotate_right(pos: tuple[Number, Number]) -> tuple[Number, Number]:
-    """Rotates a 2-D position 90 degrees right around (0, 0)"""
+def tuple_rotate_right(pos: Tuple2D) -> Tuple2D:
+    """
+    Rotates a 2-D position 90 degrees clockwise around the origin (0, 0).
+
+    Args:
+        pos: A 2D numeric tuple (x, y).
+
+    Returns:
+        A tuple representing the rotated position.
+    """
     return (pos[1], -pos[0])
 
-def tuple_rotate_left(pos: tuple[Number, Number]) -> tuple[Number, Number]:
-    """Rotates a 2-D position 90 degrees left around (0, 0)"""
-    return Pos((-pos[1], pos[0]))
+def tuple_rotate_left(pos: Tuple2D) -> Tuple2D:
+    """
+    Rotates a 2-D position 90 degrees counterclockwise around the origin (0, 0).
+
+    Args:
+        pos: A 2D numeric tuple (x, y).
+
+    Returns:
+        A tuple representing the rotated position.
+    """
+    return (-pos[1], pos[0])
 
 
 class Pos(tuple):
     """
     A tuple subclass that supports basic element-wise arithmetic operations. Typicaly usefull for 2D
     coordinate or direction representation in grids.
-    Pos is faster than Tup, but assumes 2D operations.
+    
+    While helpful, Using a Pos is not as fast as using builtin tuples.
     """
     def __new__(cls, iterable):
         """Since tuple is immutable, we override new instead of init"""
