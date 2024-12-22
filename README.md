@@ -9,11 +9,11 @@ the older problems.
 #### 2017: - (Naughty or nice)
 #### 2018: - (Anomolies)
 #### 2019: - (Space)
-#### 2020: 28 ⭐ (Vacation)
+#### 2020: 30 ⭐ (Vacation)
 #### 2021: - (Deep sea)
 #### 2022: 50 ⭐ (Jungle)
 #### 2023: 50 ⭐ (Snow)
-#### 2024: 40 ⭐ (History)
+#### 2024: 44 ⭐ (History)
 
 ## Links:
 - [adventofcode.com](https://adventofcode.com/)
