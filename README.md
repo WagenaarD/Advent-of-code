@@ -13,7 +13,7 @@ the older problems.
 #### 2021: - (Deep sea)
 #### 2022: 50 ⭐ (Jungle)
 #### 2023: 50 ⭐ (Snow)
-#### 2024: 44 ⭐ (History)
+#### 2024: 46 ⭐ (History)
 
 ## Links:
 - [adventofcode.com](https://adventofcode.com/)

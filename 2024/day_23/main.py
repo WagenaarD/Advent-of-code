@@ -37,38 +37,35 @@ def part_one(input_txt: str) -> int:
                 sets_of_three.add(tuple(sorted((pc1, pc2, pc3))))
     return sum(1 for pcs in sets_of_three if any(pc.startswith('t') for pc in pcs))
 
-class NetworkPairs:
-    def __init__(self, pairs: dict[set[str]]):
-        self.pairs = pairs
-    
-    @cache
-    def get_biggest_inteconnected(self, pcs: tuple[str]) -> tuple[str]:
-        """Returns the largest group of PCs which are all connected to eachother directly."""
-        answers = [pcs]
-        for next_pc in self.get_pair_intersection(pcs):
-            answers.append(self.get_biggest_inteconnected(tuple(sorted(pcs + (next_pc,)))))
-        return sorted(answers, key=len)[-1]
-    
-    @cache
-    def get_pair_intersection(self, pcs: tuple[str]) -> set[str]:
-        """Returns the set of PCs which are connected to all PCs in the argument."""
-        return reduce(set.intersection, [self.pairs[pc] for pc in pcs])
-
 
 @print_function
 def part_two(input_txt: str) -> int:
-    """Find the largest set of PCs which are all connected to every other PC in the set"""
+    """
+    Find the largest set of PCs which are all connected to every other PC in the set
+    The calculates the largest theoretically possible set based on the maximum number of connections
+    to a single PC (max_n). Then, we iterate over combinations of max_n length that are all 
+    connected to one PC. If none are found, we reduce max_n by one and try again. The first solution
+    we find is always the largest one.
+
+    This is fast because (1) there is not much variation in the number of connecting PCs (each PC is
+    connceted to 13 other PCs, making the maximum connected set 14), and (2) the largest possible 
+    set is 13 PCs, making the number of combinations small (14 per PC).
+    """
     lines = input_txt.split('\n')
     pairs = defaultdict(set)
     for line in lines:
         p1, p2 = line.split('-')
-        pairs[p1].add(p2)
-        pairs[p2].add(p1)
-    ans = []
-    np = NetworkPairs(pairs)
-    for pc in list(pairs):
-        ans.append(np.get_biggest_inteconnected((pc,)))
-    return ','.join(sorted(sorted(ans, key=len)[-1]))
+        pairs[p1].update({p1, p2})
+        pairs[p2].update({p1, p2})
+    max_n = max(map(len, pairs.values())) + 1
+    for max_n in range(max_n, 1, -1):
+        print(f'{max_n}')
+        for superset in pairs.values():
+            for subset in it.combinations(superset, max_n-1):
+                connections = reduce(set.intersection, [pairs[pc] for pc in subset])
+                if all(pc in connections for pc in subset):
+                    return ','.join(sorted(set(subset)))
+                
 
 @print_function
 def main(input_txt: str) -> tuple[int, int]:
