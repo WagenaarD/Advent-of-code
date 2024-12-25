@@ -86,7 +86,5 @@ def main(input, total_distance = 26501365):
 
  
 
-
-
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+aoc_run( __name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')

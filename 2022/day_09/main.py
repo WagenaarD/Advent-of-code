@@ -8,13 +8,16 @@ Cleanup - 11:08
 """
 
 import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import itertools as it
 from dataclasses import dataclass, field
 from collections import defaultdict
 import re
 import pprint
 
-
+AOC_ANSWER = (5874, 2467)
 DIRECTIONS = {'R': (0, 1), 'L': (0, -1), 'U': (-1, 0), 'D': (1, 0)}
 
 
@@ -75,9 +78,12 @@ def track_snake(input, snake_length, log = True):
             visualize_snake(snake)
     return tail_positions
             
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
+    return (
+        len(track_snake(lines, 2, len(lines) < 20)), 
+        len(track_snake(lines, 10, len(lines) < 20)),
+    )
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = sys.stdin.read().strip().split('\n')  
-    print('Part 1:', len(track_snake(input, 2, len(input) < 20)))
-    print('Part 2:', len(track_snake(input, 10, len(input) < 20)))
+aoc_run(__name__, __file__, main, AOC_ANSWER)

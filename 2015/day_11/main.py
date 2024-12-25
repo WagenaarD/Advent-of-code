@@ -57,7 +57,6 @@ def main(input: str) -> int:
         password = increment(password)
     return tuple(ans)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

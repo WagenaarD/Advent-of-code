@@ -8,13 +8,16 @@ Cleanup - 19:09
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import json
 from functools import cmp_to_key
 
+AOC_ANSWER = (6272, 22288)
 
-# @print_function(prefix = '   - ')
+
+# @print_function
 def correct_order(left, right) -> bool:
     """
     Copied from the challenge and reordered to fit the code.
@@ -53,14 +56,14 @@ def correct_order(left, right) -> bool:
         return min(1, max(-1, right - left))
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    
-    input = sys.stdin.read().strip()
-    
-    pairs = [[json.loads(line) for line in pair.split('\n')] for pair in input.split('\n\n')]
-    print('Part 1:', sum([idx + 1 for idx, pair in enumerate(pairs) if correct_order(*pair) == 1]))
+@print_function
+def main(input_txt: str) -> tuple[int, int]: 
+    pairs = [[json.loads(line) for line in pair.split('\n')] for pair in input_txt.split('\n\n')]
+    p1 = sum([idx + 1 for idx, pair in enumerate(pairs) if correct_order(*pair) == 1])
 
-    lines = [json.loads(line) for line in input.replace('\n\n', '\n').split('\n')] + [[[2]], [[6]]]
+    lines = [json.loads(line) for line in input_txt.replace('\n\n', '\n').split('\n')] + [[[2]], [[6]]]
     lines.sort(key = cmp_to_key(correct_order), reverse = True)
-    print('Part 2:', (lines.index([[2]]) + 1) * (lines.index([[6]]) + 1))
+    p2 = (lines.index([[2]]) + 1) * (lines.index([[6]]) + 1)
+    return (p1, p2)
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

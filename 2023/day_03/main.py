@@ -48,6 +48,5 @@ def main(input: str) -> tuple[int, int]:
                 score_p2 += math.prod(nums)
     return (score_p1, score_p2)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')

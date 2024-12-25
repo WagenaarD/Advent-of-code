@@ -23,7 +23,6 @@ def main(input: str) -> 'tuple[int, int]':
         if seat_2 - seat_1 == 2:
             return max(seat_ids), seat_1 + 1
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

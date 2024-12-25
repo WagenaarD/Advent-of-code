@@ -64,7 +64,6 @@ def main(input: str) -> tuple[int, int]:
 def part_one_in_one_line(input: str) -> int:
     return sum([tuple(len(block) for block in re.findall('#+', ''.join([val for pair in zip(bprint.split('?'), chars) for val in pair]) + bprint.split('?')[-1])) == tuple(map(int, vals.split(','))) for bprint, vals in [line.split() for line in input.split('\n')] for chars in it.product('#.', repeat = bprint.count('?'))])
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 

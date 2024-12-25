@@ -7,6 +7,13 @@ Part 1 - 19:58 - 1350966
 Part 2 - 20:34 - 6296435
 """
 
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
+
+AOC_ANSWER = (1350966, 6296435)
+
 
 class FileFolder:
     """
@@ -80,15 +87,15 @@ def process_input(input_lines):
     return root
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    root = process_input(open('input.txt').read().split('\n'))
-    print(root)
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    root = process_input(input_txt.split('\n'))
+    # print(root)
     all_dirs = root.get_dirs()
 
     # Part 1: Find all of the directories with a total size of at most 100000. What is the sum of 
     # the total sizes of those directories?
-    print('Part 1:', sum([dir.size for dir in all_dirs if dir.size <= 100000]))
+    # print('Part 1:', sum([dir.size for dir in all_dirs if dir.size <= 100000]))
 
     # Part 2: Find the smallest directory that, if deleted, would free up enough space on the 
     # filesystem to run the update. What is the total size of that directory?
@@ -96,7 +103,11 @@ if __name__ == '__main__':
     # unused space of at least 30000000. You need to find a directory you can delete that will free 
     # up enough space to run the update.
     required_space = 30000000 - (70000000 - root.size)
-    print('Part 2:', min([item.size for item in all_dirs if item.size >= required_space]))
+    # print('Part 2:', min([item.size for item in all_dirs if item.size >= required_space]))
+    return (
+        sum([dir.size for dir in all_dirs if dir.size <= 100000]),
+        min([item.size for item in all_dirs if item.size >= required_space]),
+    )
     
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

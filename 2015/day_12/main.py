@@ -36,7 +36,6 @@ def main(input: str) -> tuple[int, int]:
     data = json.loads(input)
     return get_values(data), get_values(data, 'red')
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

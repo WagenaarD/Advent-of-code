@@ -131,6 +131,5 @@ def main(input_txt: str) -> tuple[int, int]:
         wizard_battle(input_txt), 
         wizard_battle(input_txt, True)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

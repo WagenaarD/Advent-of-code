@@ -8,10 +8,12 @@ Cleanup -
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
 
+AOC_ANSWER = (4580, 2610)
 
 class InsideBfs:
     def __init__(self, drops: list):
@@ -50,11 +52,13 @@ class InsideBfs:
             return coord in self.drops
 
 
-@print_function(run_time = True)
-def solve(lines):
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
     drops = [tuple(map(int, re.findall('[0-9]+', line))) for line in lines]
     inside = InsideBfs(drops)
 
+    ans = tuple()
     for part in (False, True):
         faces = 0
         for x in range(inside.min_bound[0], inside.max_bound[0] + 1):
@@ -63,11 +67,8 @@ def solve(lines):
                     in_drop = inside.test((x, y, z), part)
                     for dx, dy, dz in ((1, 0, 0), (0, 1, 0), (0, 0, 1)):
                         faces += in_drop != inside.test((x + dx, y + dy, z + dz), part)
-        print('Part {}:'.format(int(part)), faces)
-    
+        ans = ans + (faces,)
+        # print('Part {}:'.format(int(part)), faces)
+    return ans
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-
-    lines = sys.stdin.read().strip().split('\n')
-    solve(lines)
+aoc_run(__name__, __file__, main, AOC_ANSWER)

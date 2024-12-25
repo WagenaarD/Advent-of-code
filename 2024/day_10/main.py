@@ -56,7 +56,4 @@ def main(input_txt: str) -> tuple[int, int]:
                     qeue.append(npos)
     return len(set(connections)), len(connections)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER)
-
-

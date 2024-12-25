@@ -96,6 +96,5 @@ def main(input: str) -> tuple[int, None]:
             break
     return ans, None        
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')

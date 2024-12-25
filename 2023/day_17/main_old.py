@@ -109,7 +109,6 @@ def solve(input: str, step_bounds: tuple[int, int] = (1, 3), log: bool = False) 
 def main(input: str, log: bool = False) -> tuple[int, int]:
     return (solve(input, (1, 3), log), solve(input, (4, 10), log))
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 

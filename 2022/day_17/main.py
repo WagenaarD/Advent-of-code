@@ -8,8 +8,11 @@ Cleanup -
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
+
+AOC_ANSWER = (3181, 1570434782634)
 
 ELEMENTS = (
     [int('0011110', 2)],
@@ -210,8 +213,8 @@ get_score.pattern_start = None
 get_score.pattern_len = None
 
 
-@print_function(run_time = True)
-def solve(input):
+@print_function
+def main(input_txt: str) -> tuple[int, int]:    
     """
     The element drops follow a certain pattern. After about 2_000 simulations, all possible 
     calculations are already cached, but just looking up the answer still takes around 1E6s = 12 
@@ -227,18 +230,17 @@ def solve(input):
     need to calculate a up to the start of the pattern, then any full cycle can be skipped, and then
     the remainder partial cycle. Since all answers are already cahced this is very fast.
     """
-    simulate_element_drops(input, 10_000)
+    simulate_element_drops(input_txt, 10_000)
     reset_cache = len(drop_one_element.cache)
     print('reset_cache', reset_cache)
     drop_one_element.cache = {}
-    simulate_element_drops(input, 10_000, reset_cache = reset_cache)
+    simulate_element_drops(input_txt, 10_000, reset_cache = reset_cache)
     get_score.pattern_len = len(drop_one_element.cache)
     print('get_score.pattern_start', get_score.pattern_start)
     print('len(drop_one_element.cache)', len(drop_one_element.cache))
-    print('Part 1:', get_score(input, 2022))
-    print('Part 2:', get_score(input, 1_000_000_000_000))
+    return (
+        get_score(input_txt, 2022),
+        get_score(input_txt, 1_000_000_000_000),
+    )
 
-
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    solve(sys.stdin.read().strip())
+aoc_run(__name__, __file__, main, AOC_ANSWER)

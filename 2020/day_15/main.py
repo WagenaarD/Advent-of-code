@@ -33,6 +33,5 @@ def main(input_txt: str) -> tuple[int, int]:
         solve(input_txt, 2020), 
         solve(input_txt, 30_000_000)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

@@ -19,6 +19,12 @@
             "DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]",
         ]
     },
+    "ADJ4 Dict": {
+        "prefix": "ADJ4 Dict",
+        "body": [
+            "DIRS = {'^': (-1, 0), '>': (0, 1), 'v': (1, 0), '<': (0, -1)}",
+        ]
+    },
     "ADJ8": {
         "prefix": "ADJ8",
         "body": [
@@ -46,7 +52,7 @@
     "dijkstra": {
         "prefix": "Dijkstra",
         "body": [
-            "def dijkstra(start: Tup[int, int]) -> dict[Tup[int, int], int]:",
+            "def dijkstra(start: tuple[int, int]) -> dict[tuple[int, int], int]:",
             "    \"\"\"",
             "    Path storing Dijkstra algorithm. Dijkstra algorithm finds the shortest path from a starting ",
             "    state to any other state for positive pathlengths.",
@@ -66,7 +72,7 @@
             "        seen.add(pos)",
             "        path = (pos, path)",
             "        for dpos in DIRS:",
-            "            npos = pos + dpos",
+            "            npos = tuple_add(pos, dpos)",
             "            ncost = cost + 1 # Consider edges and consider obstacles",
             "            if npos in seen:",
             "                continue",
@@ -76,4 +82,8 @@
             "    return dist",
         ]
     },    
+    "transpose list": {
+        "prefix": "Transpose list",
+        "body": "transposed_list = list(zip(*old_list))",
+    }
 }

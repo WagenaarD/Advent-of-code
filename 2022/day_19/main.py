@@ -6,11 +6,13 @@ Part 2  - 4864 (ex 3472)
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
-from functools import cache
 import math
+
+AOC_ANSWER = (1365, 4864)
 
 
 # Optimization ideas:
@@ -97,11 +99,9 @@ def solve_2(blueprints):
     return result
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    
-    lines = sys.stdin.read().strip().split('\n')
-
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
     blueprints = []
     for line in lines:
         blueprint = []
@@ -113,6 +113,10 @@ if __name__ == '__main__':
                 0,
             ))))
         blueprints.append(blueprint)
+    
+    return (
+        solve_1(blueprints),
+        solve_2(blueprints),
+    )
 
-    solve_1(blueprints)
-    solve_2(blueprints)
+aoc_run(__name__, __file__, main, AOC_ANSWER)

@@ -8,16 +8,9 @@ python3 main.py < in
 AOC_ANSWER = (74, 1795)
 
 import sys
-sys.path.append('../..')
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-import math
 
 
 def part_one(input: str) -> int:

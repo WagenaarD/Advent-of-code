@@ -50,6 +50,5 @@ def main(input_txt: str) -> tuple[int, int]:
         solve(input_txt, {'a': 0, 'b': 0}), 
         solve(input_txt, {'a': 1, 'b': 0})
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

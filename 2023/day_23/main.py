@@ -110,6 +110,5 @@ def solve(input: str, slopes = True) -> int:
 def main(input: str) -> tuple[int, int]:
     return (solve(input), solve(input, False))
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')

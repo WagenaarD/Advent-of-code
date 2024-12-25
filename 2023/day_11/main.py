@@ -38,7 +38,6 @@ def main(input: str, factor: int = 1_000_000) -> tuple[int, int]:
     score_p2 = dist + empties * (factor - 1)
     return (score_p1, score_p2)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 

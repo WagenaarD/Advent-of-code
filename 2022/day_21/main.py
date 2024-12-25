@@ -8,18 +8,14 @@ Cleanup -
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 from functools import cache
 import operator
-import math
 
+
+AOC_ANSWER = (170237589447588, 3712643961892)
 OPERATIONS = {
     '+': operator.add,
     '-': operator.sub,
@@ -78,13 +74,14 @@ def solve_2(max_iter: int = 25):
     return int(humn_val)
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-
-    lines = sys.stdin.read().strip().split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
     monkey_val.input = {line[0:4]: line[6:] for line in lines}
     
-    solve_1()
-    solve_2()
+    return (
+        solve_1(),
+        solve_2(),
+    )
 
-
+aoc_run(__name__, __file__, main, AOC_ANSWER)

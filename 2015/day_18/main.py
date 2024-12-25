@@ -79,6 +79,7 @@ def main(input: str) -> tuple[int, int]:
         solve(grid, False, iterations, do_print), 
         solve(grid, True, iterations, do_print),
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+
+aoc_run( __name__, __file__, main, AOC_ANSWER, 'in')
 
 

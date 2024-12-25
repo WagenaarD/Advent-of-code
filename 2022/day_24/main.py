@@ -8,18 +8,12 @@ Cleanup -
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict
-import re
-import numpy as np
-from pprint import pprint
-from functools import cache
-from datetime import datetime
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 
 
+AOC_ANSWER = (301, 859)
 DIRS = {
     '>': ( 0,  1),
     '<': ( 0, -1),
@@ -86,9 +80,9 @@ def bfs(blizzards, start, end, width, height):
                         stack.add((nrow, ncol))
                         
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    lines = sys.stdin.read().strip().split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
     # Blizzards in grid starting at [0][0]
     start = (-1, lines[0].index('.') - 1)
     end = (len(lines) - 2, lines[-1].index('.') - 1)
@@ -103,5 +97,6 @@ if __name__ == '__main__':
     t_0, blizzards = bfs(blizzards, start, end, width, height)
     t_1, blizzards = bfs(blizzards, end, start, width, height)
     t_2, blizzards = bfs(blizzards, start, end, width, height)
-    print('Part 1:', t_0)
-    print('Part 2:', t_0 + t_1 + t_2)
+    return (t_0, t_0 + t_1 + t_2)
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

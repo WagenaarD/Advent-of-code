@@ -34,7 +34,6 @@ def main(input: str) -> int:
         p2 += (password[n1-1] == chr) != (password[n2-1] == chr)
     return p1, p2
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

@@ -26,7 +26,6 @@ def main(input: str) -> tuple[int, int]:
                 counter[len(comb)] += 1
     return sum(counter.values()), counter[min(counter)]
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 
 

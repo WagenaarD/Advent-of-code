@@ -21,7 +21,7 @@ def main(input: str) -> 'tuple[int, int]':
     lines = input.split('\n')
     dist = defaultdict(dict)
     for line in lines:
-        place1, place2, d = re.match('(\w+) to (\w+) = (\d+)', line).groups()
+        place1, place2, d = re.match('(\\w+) to (\\w+) = (\\d+)', line).groups()
         dist[place1][place2] = int(d)
         dist[place2][place1] = int(d)
     traveled = []
@@ -32,7 +32,6 @@ def main(input: str) -> 'tuple[int, int]':
             traveled[-1] += dist[current][place]
             current = place
     return min(traveled), max(traveled)
-
 
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 

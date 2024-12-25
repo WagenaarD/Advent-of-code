@@ -97,6 +97,5 @@ def main(input_txt: str) -> tuple[int, int]:
         part_one(bytes, width, height, step, is_example), 
         part_two(bytes, width, height)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

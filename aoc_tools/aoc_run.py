@@ -18,5 +18,6 @@ def aoc_run(name: str, file_path: str, main: Callable, AOC_ANSWER: tuple[int, in
         with open(f'{script_path}/{file_name}') as f:
             input = f.read().strip()
     else:
-        input = sys.stdin.read().strip()
+        # input = sys.stdin.read().strip()
+        input = sys.stdin.read() # Removed .strip() for grid inputs with blank start (2022/day_22)
     print('  ->', main(input) == (AOC_ANSWER[0], AOC_ANSWER[1]))

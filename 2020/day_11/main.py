@@ -8,11 +8,11 @@ import sys
 from pathlib import Path
 sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
 from aoc_tools import print_function, aoc_run
-from aoc_tools import Tup
+from aoc_tools import Pos
 
 AOC_ANSWER = (2270, 2042)
 
-DIRS = [Tup(elem) for elem in [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]]
+DIRS = [Pos(elem) for elem in [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]]
 
 def process_round(grid: list[list[str]], nrows: int, ncols: int, p2: bool = False) -> list[list[str]]:
     """
@@ -26,7 +26,7 @@ def process_round(grid: list[list[str]], nrows: int, ncols: int, p2: bool = Fals
     ngrid = {}
     for r in range(nrows):
         for c in range(ncols):
-            pos = Tup((r, c))
+            pos = Pos((r, c))
             val = grid[pos]
             if val != '.':
                 if p2:
@@ -50,7 +50,7 @@ def process_round(grid: list[list[str]], nrows: int, ncols: int, p2: bool = Fals
 
 @print_function
 def solve(input_txt: str, p2: bool = False) -> int:
-    grid = {Tup((r, c)): val for r, line in enumerate(input_txt.split('\n')) for c, val in enumerate(line)}
+    grid = {Pos((r, c)): val for r, line in enumerate(input_txt.split('\n')) for c, val in enumerate(line)}
     nrows, ncols = input_txt.count('\n')+1, input_txt.find('\n')
     ngrid = process_round(grid, nrows, ncols, p2)
     while ngrid != grid:
@@ -65,6 +65,5 @@ def main(input_txt: str) -> tuple[int, int]:
         solve(input_txt), 
         solve(input_txt, True)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

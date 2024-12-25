@@ -26,5 +26,4 @@ def main(input: str) -> int:
         p2 += nums[0] * rlist.count(nums[0])
     return p1, p2
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')

@@ -6,11 +6,12 @@ Part 2  - 933 (ex 20)
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import itertools as it
 
-
+AOC_ANSWER = (3966, 933)
 DIRECTIONS = ('NSWE', 'SWEN', 'WENS', 'ENSW')
 DIR_CHECK = {
     'N': ((-1, -1), (-1,  1), (-1,  0)), 
@@ -37,7 +38,7 @@ def print_board(elves):
 
 
 @print_function()
-def solve(elves):
+def solve(elves, lines):
     dir_cycle = it.cycle(DIRECTIONS)
     round = 0
     while True:
@@ -86,13 +87,15 @@ def solve(elves):
     return (part_1_score, round)
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    lines = sys.stdin.read().strip().split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
     elves = list()
     for row, line in enumerate(lines):
         for col, char in enumerate(line):
             if char == '#':
                 elves.append((row, col))
     if len(lines) <= 10: print_board(elves)
-    solve(elves)
+    return solve(elves, lines)
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

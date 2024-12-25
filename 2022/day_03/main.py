@@ -5,7 +5,13 @@ Advent of code challenge 2022
 __project__   = 'Advent of code 2022'
 __author__    = 'D W'
 
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import string
+
+AOC_ANSWER = (7795, 2703)
 
 
 def get_char_priority(char: str) -> int:
@@ -43,14 +49,11 @@ def badge_score(backpack_list: list) -> int:
          raise(Exception('WTF: no badge found in group: "{}"'.format(backpack_list)))
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    text_lines = open('input.txt').read().split('\n')
-    
-    sum_lines = sum([line_score(line) for line in text_lines])
-    print('Part 1 - Total score according to input: {}'.format(sum_lines))
-    
-    sum_badges = sum([badge_score(text_lines[idx:idx + 3]) for idx in range(0, len(text_lines), 3)])
-    print('Part 2 - Total score according to input: {}'.format(sum_badges))
-    
-   
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
+    sum_lines = sum([line_score(line) for line in lines])
+    sum_badges = sum([badge_score(lines[idx:idx + 3]) for idx in range(0, len(lines), 3)])
+    return sum_lines, sum_badges
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

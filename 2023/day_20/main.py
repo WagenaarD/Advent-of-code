@@ -102,7 +102,6 @@ def main(input: str) -> int:
         if ans_p1 and ans_p2:
             return (ans_p1, ans_p2)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 

@@ -17,8 +17,14 @@ Y: Draw: 3
 Z: Win:  6
 """
 
-__project__   = 'Advent of code 2022'
-__author__    = 'D W'
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
+
+AOC_ANSWER = (10816, 11657)
+
+
 
 
 def match_string_to_score(match_string: str) -> int:
@@ -84,13 +90,15 @@ def win_loss_string_to_score(match_string: str) -> int:
     return score
         
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    full_text = open('input.txt').read()
-    match_list = full_text.split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    match_list = input_txt.split('\n')
 
     match_score_list = [match_string_to_score(match) for match in match_list]
-    print('Part 1 - Total score according to input: {}'.format(sum(match_score_list)))
-
     updated_match_score_list = [win_loss_string_to_score(match) for match in match_list]
-    print('Part 2 - Total score according to input: {}'.format(sum(updated_match_score_list)))
+    return (
+        sum(match_score_list),
+        sum(updated_match_score_list),
+    )
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

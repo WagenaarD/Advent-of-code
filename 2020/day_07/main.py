@@ -57,6 +57,7 @@ def main(input: str) -> tuple[int, int]:
         part_one(rules), 
         part_two(rules)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+
+aoc_run( __name__, __file__, main, AOC_ANSWER, 'in')
 
 

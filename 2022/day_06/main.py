@@ -6,15 +6,24 @@ Part 2 17:44 - 2746
 Clean  17:48 
 """
 
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 
-def find_distinct_substring(input: str, length: int) -> int:
-    for idx in range(len(input)):
-        if len(set(input[idx:idx+length])) == length:
-            return idx + length
+AOC_ANSWER = (1480, 2746)
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    input = open('input.txt').read()
-    print('Part 1:', find_distinct_substring(input, 4))
-    print('Part 2:', find_distinct_substring(input, 14))
+def find_distinct_substring(input_txt: str, length: int) -> int:
+    for idx in range(len(input_txt)):
+        if len(set(input_txt[idx:idx+length])) == length:
+            return idx + length 
+
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    return (
+        find_distinct_substring(input_txt, 4), 
+        find_distinct_substring(input_txt, 14),
+    )
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

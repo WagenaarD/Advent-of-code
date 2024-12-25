@@ -1,305 +1,150 @@
 """
-Overengineered solution that works for both example and input. Does the folding itself.
-
 Advent of code challenge 2022
 >> python3 main.py < in
-Part 1  - 67390 (ex 6032)
-Part 2  - 95291 (ex 5031)
+Part 1  - 67390
+Part 2  - 95291
+
+Assuming grid that goes like:
+O--------> + x
+|
+|
+|
+V 
++ y
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
-import itertools as it
-from dataclasses import dataclass, field
-from collections import defaultdict, namedtuple
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
-import numpy as np
-from pprint import pprint
-from functools import cache
 
-
-AXES = 'xyz'
-VECTOR_NAME = {
-    ( 1, 0, 0): '+x',
-    (-1, 0, 0): '-x',
-    (0,  1, 0): '+y',
-    (0, -1, 0): '-y',
-    (0, 0,  1): '+z',
-    (0, 0, -1): '-z',
-}
+AOC_ANSWER = (67390, 95291)
 DIR_SCORE = {
-    ( 0,  1): 0, # 0 for right
-    ( 1,  0): 1, # 1 for down
-    ( 0, -1): 2, # 2 for left
-    (-1,  0): 3, # 3 for up
+    (1, 0): 0,  # >
+    (0, 1): 1,  # v
+    (-1, 0): 2, # <
+    (0, -1): 3, # ^
 }
 
-
-class Vector:
-    def __init__(self, x, y, z):
-        self.x, self.y, self.z = x, y, z
-
-    @classmethod
-    def by_name(cls, name: str):
-        return Vector(*([key for key, key_name in VECTOR_NAME.items() if key_name == name][0]))
-
-    def __str__(self):
-        vector_tuple = tuple(getattr(self, axis) for axis in AXES)
-        if vector_tuple in VECTOR_NAME:
-            return VECTOR_NAME[vector_tuple]
-        else:
-            return '<Vector({},{},{})>'.format(self.x, self.y, self.z)
-        
-    def __eq__(self, other) -> bool:
-        if type(other) != Vector:
-            return False
-        return all(getattr(self, axis) == getattr(other, axis) for axis in AXES)
-    
-    def __add__(self, other):
-        return Vector(*(getattr(self, axis) + getattr(other, axis) for axis in AXES))
-
-    def __sub__(self, other):
-        return Vector(*(getattr(self, axis) - getattr(other, axis) for axis in AXES))
-
-    def __mul__(self, other):
-        if type(other) == int:
-            return Vector(*(getattr(self, axis) * other for axis in AXES))
-        elif type(other) == Vector:
-            return sum(getattr(self, axis) * getattr(other, axis) for axis in AXES)
-
-    def __neg__(self):
-        return Vector(*(-getattr(self, axis) for axis in AXES))
-        
-    def outer_product(self, other):
-        return Vector(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x,
-        )
+def rotate(dir: tuple, lr: str) -> tuple:
+    return (-dir[1], dir[0]) if lr == 'R' else (dir[1], -dir[0])
 
 
-class Face:
-    def __init__(self, face_row, face_col, size, row_axis = None, col_axis = None, out_axis = None):
-        self.face_row, self.face_col = face_row, face_col
-        self.size = size
-        self.row_axis, self.col_axis, self.out_axis = row_axis, col_axis, out_axis
-    
-    @property
-    def origin(self):
-        origin = Vector(0,0,0)
-        if str(self.row_axis)[0] == '-':
-            origin += -self.row_axis * (self.size - 1)
-        if str(self.col_axis)[0] == '-':
-            origin += -self.col_axis * (self.size - 1)
-        if str(self.out_axis)[0] == '-':
-            origin += self.out_axis * 1
-        else:
-            origin += self.out_axis * self.size
-        return origin
+def out_of_bounds(x: int, y: int, lines: list) -> bool:
+    if 0 <= x < len(lines[0]) and 0 <= y < len(lines):
+        return lines[y][x] == ' '
+    return True
 
-    def row_col_to_vector(self, row, col):
-        return self.origin + \
-            self.row_axis * (row - self.face_row * self.size)+ \
-            self.col_axis * (col - self.face_col * self.size)
-        
-    def vector_to_row_col(self, vector):
-        vector = vector - self.origin
-        row = self.row_axis * vector + self.face_row * self.size
-        col = self.col_axis * vector + self.face_col * self.size
-        return (row, col)
+@print_function()
+def find_last_position(lines: list, input: list, cube: bool = True, log: bool = False) -> int:
+    console = lambda *x: print(*x) if log else lambda *x: None
+    x, y, dir = lines[0].index('.'), 0, (1, 0)
 
-    def __str__(self):
-        return '<Face "{}">'.format(str(self.out_axis))
-    
-
-class Cube:
-    def __init__(self, lines):
-        self.lines = lines
-        no_fields = sum([line.count('.') + line.count('#') for line in lines])
-        self.size = int((no_fields / 6) ** 0.5)
-        # Determine where the faces are located in the input file
-        self.faces = []
-        for face_row in range(len(lines) // self.size):
-            for face_col in range(len(lines[0]) // self.size):
-                if self.lines[face_row * self.size][face_col * self.size] != ' ':
-                    self.faces.append(Face(face_row, face_col, self.size))
-        # Set the axis direction for the first face
-        self.faces[0].col_axis = Vector.by_name('+x')
-        self.faces[0].row_axis = Vector.by_name('+y')
-        self.faces[0].out_axis = Vector.by_name('+z')
-        # Derive the axis directions for other faces
-        while len([face for face in self.faces if face.out_axis != None]) < 6:
-            for face in self.faces:
-                if face.out_axis:
-                    continue
-                # List neighboring faces
-                for drow, dcol in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-                    nbor = self.get_face(face.face_row + drow, face.face_col + dcol)
-                    if nbor:
-                        if nbor.out_axis:
-                            # Derive an axes system
-                            if dcol == -1: # face to right of nbor
-                                face.col_axis = -nbor.out_axis
-                                face.row_axis = nbor.row_axis
-                                face.out_axis = nbor.col_axis
-                            elif dcol == 1: # face to left of nbor
-                                face.row_axis = nbor.row_axis
-                                face.col_axis = nbor.out_axis
-                                face.out_axis = -nbor.col_axis
-                            elif drow == -1: # face below nbor
-                                face.row_axis = -nbor.out_axis
-                                face.col_axis = nbor.col_axis
-                                face.out_axis = nbor.row_axis
-                            elif drow == 1: # face above nbor (will never happen)
-                                face.row_axis = nbor.out_axis
-                                face.col_axis = nbor.col_axis
-                                face.out_axis = -nbor.row_axis
-        print(self)
-        self.reset_position()
-    
-    def reset_position(self):
-        self.pos = (0, self.lines[0].index('.'))
-        self.dir = (0, 1)
-
-    def process_input(self, input, folded = True):
-        print(input)
-        for _, command in enumerate(re.findall('[0-9]+|[LR]', input)):
-            print('(_, pos, dir, command) =', (_, self.pos, self.dir, command))
-            if command == 'L':
-                self.dir = (-self.dir[1], self.dir[0])
-            elif command == 'R':
-                self.dir = (self.dir[1], -self.dir[0])
+    for command_idx, command in enumerate(input[:]):
+        console('{}: (pos, dir, command) = {}'.format(command_idx, ((x, y), dir, command)))
+        if command in ['R', 'L']:
+            dir = rotate(dir, command)
+            continue
+        for idx in range(int(command)):
+            # Move one step at a time
+            dx, dy = dir
+            next_dir = dir
+            next_x, next_y = x + dx, y + dy
+            if not cube:
+                # Manage wrapping around (Part 1)
+                while lines[(y + dy) % len(lines)][(x + dx) % len(lines[0])] == ' ':
+                    dx += dir[0]
+                    dy += dir[1]
+                next_x, next_y = (x + dx) % len(lines[0]), (y + dy) % len(lines)
             else:
-                self.move_forward(int(command), folded)
+                # Manage wrapping around (Part 2)
+                if out_of_bounds(next_x, next_y, lines):
+                    # First find the current face
+                    face_x = x % 50
+                    face_y = y % 50
+                    if x // 50 == 0 and y // 50 == 2:
+                        # Black
+                        if dx < 0:
+                            next_x, next_y = 50, 49 - face_y
+                            next_dir = (1, 0)
+                        elif dy < 0:
+                            next_x, next_y = 50, 50 + face_x
+                            next_dir = (1, 0)
+                    elif x // 50 == 0 and y // 50 == 3:
+                        # Green
+                        if dx < 0:
+                            next_x, next_y = 50 + face_y, 0
+                            next_dir = (0, 1)
+                        elif dx > 0:
+                            next_x, next_y = 50 + face_y, 149
+                            next_dir = (0, -1)
+                        elif dy > 0:
+                            next_x, next_y = 100 + face_x, 0
+                            next_dir = (0, 1)
+                    elif x // 50 == 1 and y // 50 == 0:
+                        # White
+                        if dx < 0:
+                            next_x, next_y = 0, 149 - face_y
+                            next_dir = (1, 0)
+                        elif dy < 0:
+                            next_x, next_y = 0, 150 + face_x
+                            next_dir = (1, 0)
+                    elif x // 50 == 1 and y // 50 == 1:
+                        # Blue
+                        if dx < 0:
+                            next_x, next_y = face_y, 100
+                            next_dir = (0, 1)
+                        elif dx > 0:
+                            next_x, next_y = 100 + face_y, 49
+                            next_dir = (0, -1)
+                    elif x // 50 == 1 and y // 50 == 2:
+                        # Yellow
+                        if dx > 0:
+                            next_x, next_y = 149, 49 - face_y
+                            next_dir = (-1, 0)
+                        elif dy > 0:
+                            next_x, next_y = 49, 150 + face_x
+                            next_dir = (-1, 0)
+                    elif x // 50 == 2 and y // 50 == 0:
+                        # Red
+                        if dx > 0:
+                            next_x, next_y = 99, 149 - face_y
+                            next_dir = (-1, 0)
+                        elif dy < 0:
+                            next_x, next_y = face_x, 199
+                            next_dir = (0, -1)
+                        elif dy > 0:
+                            next_x, next_y = 99, 50 + face_x
+                            next_dir = (-1, 0)
+                    console('  Changed cube face: {} -> {}'.format(
+                        (x, y, dir), (next_x, next_y, next_dir))
+                    )
 
-    def move_forward(self, steps, folded):
-        for _ in range(steps):
-            dr, dc = self.dir
-            ndir = self.dir
-            row, col = self.pos
-            nrow, ncol = row + dr, col + dc
-            if self.out_of_bounds(nrow, ncol):
-                if not folded:
-                    # Manage wrapping around (Part 1)
-                    while self.lines[nrow % len(self.lines)][ncol % len(self.lines[0])] == ' ':
-                        nrow, ncol = (nrow + dr) % len(self.lines), (ncol + dc) % len(self.lines[0])
-                else:
-                    # Manage folds in space (Part 2)
-                    print('  OOB. (row, col, dr, dc)', (row, col, dr, dc))
-                    print('    (row, col)', (row, col))
-                    print('    (nrow, ncol)', (nrow, ncol))
-                    # Find axes of current face
-                    old_face = self.get_face(row // self.size, col // self.size)
-                    edge_position = old_face.row_col_to_vector(nrow, ncol)
-                    if dr == 1:
-                        old_vector = old_face.row_axis
-                    elif dr == -1:
-                        old_vector = -old_face.row_axis
-                    elif dc == 1:
-                        old_vector = old_face.col_axis
-                    elif dc == -1:
-                        old_vector = -old_face.col_axis
-                    # Get new face(old direction == out_axis of new face)
-                    next_face = [face for face in self.faces if face.out_axis == old_vector][0]
-                    # Find the new direction in the row, col grid
-                    new_vector = -old_face.out_axis
-                    if new_vector == next_face.row_axis:
-                        ndir = (1, 0)
-                    elif new_vector == -next_face.row_axis:
-                        ndir = (-1, 0)
-                    elif new_vector == next_face.col_axis:
-                        ndir = (0, 1)
-                    elif new_vector == -next_face.col_axis:
-                        ndir = (0, -1)
-                    # Process one cell from the edge of the cube onto the face
-                    row, col = next_face.vector_to_row_col(edge_position)
-                    dr, dc = ndir
-                    nrow, ncol = row + dr, col + dc
-                    print('    (edge_position)', edge_position)
-                    print('    (row, col)', (row, col))
-                    print('    (nrow, ncol)', (nrow, ncol))
-            if self.lines[nrow][ncol] == '#':
+            # Manage walls
+            if lines[next_y][next_x] == '#':
+                console('  Brick at {}'.format((next_x, next_y)))
                 break
-            self.pos, self.dir = (nrow, ncol), ndir
+            elif lines[next_y][next_x] == '.':
+                x, y, dir = next_x, next_y, next_dir
+    console('(pos, dir, command) =', ((x, y), dir, 'DONE'))
 
-    @property
-    def score(self):
-        return (self.pos[0] + 1) * 1000 + (self.pos[1] + 1) * 4 + DIR_SCORE[self.dir]
-
-    def out_of_bounds(self, row, col):
-        if not (0 <= row < len(self.lines) and 0 <= col < len(self.lines[0])):
-            return True
-        return self.lines[row][col] == ' '
-
-    def get_face(self, face_row, face_col):
-        try:
-            return [face for face in self.faces if face.face_row == face_row and face.face_col == face_col][0]
-        except:
-            return None
-    
-    def __str__(self):
-        output = ' ' * 8
-        for face_col in range(max([face.face_col for face in self.faces]) + 2):
-            output += (' ' if face_col * self.size < 100 else str((face_col * self.size // 100) % 10)) + ' ' * 12
-        output += '\n' + ' ' * 8
-        for face_col in range(max([face.face_col for face in self.faces]) + 2):
-            output += (' ' if face_col * self.size < 10 else str((face_col * self.size // 10) % 10)) + ' ' * 12
-        output += '\n' + ' ' * 8
-        for face_col in range(max([face.face_col for face in self.faces]) + 2):
-            output += str((face_col * self.size) % 10) + ' ' * 12
-        output += '\n' + ' ' * 8
-        for face_col in range(max([face.face_col for face in self.faces]) + 2):
-            output += '|' + ' ' * 12
-        output += '\n'
-        for face_row in range(max([face.face_row for face in self.faces]) + 1):
-            output += '{:4} -  '.format(face_row * self.size)
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                output += '.-----------.' if self.get_face(face_row, face_col) else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '|  ---> {}  |'.format(face.col_axis) if face else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '| |         |' if face else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '| |   {}     |'.format(self.faces.index(face)) if face else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '| V     {}  |'.format(face.out_axis) if face else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '| {}        |'.format(face.row_axis) if face else ' ' * 13
-            output += '\n' + ' ' * 8
-            for face_col in range(max([face.face_col for face in self.faces]) + 1):
-                face = self.get_face(face_row, face_col)
-                output += '.-----------.' if face else ' ' * 13
-            output += '\n'
-        output += '{:4} -  '.format((max([face.face_row for face in self.faces]) + 1) * self.size)
-        return output
+    return 1000 * (y + 1) + 4 * (x + 1) + DIR_SCORE[dir]
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    
-    lines, input = sys.stdin.read().split('\n\n')
-    lines = lines.split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
+
+    input = re.findall('[0-9]+|[LR]', lines[-1])
+    lines.pop()
+    lines.pop()
     width = max([len(line) for line in lines])
     lines = [line + ' ' * (width - len(line)) for line in lines]
 
-    cube = Cube(lines)
-    cube.process_input(input, False)
-    part_1 = cube.score
-    cube.reset_position()
-    cube.process_input(input, True)
-    part_2 = cube.score
+    return (
+        find_last_position(lines, input, False),
+        find_last_position(lines, input, True),
+    )
 
-    print('Part 1:', part_1)
-    print('Part 1:', part_2)
-
+aoc_run(__name__, __file__, main, AOC_ANSWER)

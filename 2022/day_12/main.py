@@ -8,7 +8,11 @@ Cleanup - Forgot
 """
 
 import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 
+AOC_ANSWER = (391, 386)
 
 def find_steps_between_points(start_positions: list, end_pos: tuple, lines: list) -> int:
     steps = 0
@@ -30,15 +34,18 @@ def find_steps_between_points(start_positions: list, end_pos: tuple, lines: list
 def find_positions(char: str, lines: list) -> list:
     return [(r, c) for r in range(len(lines)) for c in range(len(lines[0])) if lines[r][c] == char]
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-
-    lines = sys.stdin.read().strip().split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    lines = input_txt.split('\n')
 
     start_pos = find_positions('S', lines)[0]
     end_pos = find_positions('E', lines)[0]
     a_positions = find_positions('a', lines)
     lines = [line.replace('E', 'z').replace('S', 'a') for line in lines]
 
-    print('Part 1:', find_steps_between_points([start_pos], end_pos, lines))
-    print('Part 2:', find_steps_between_points(a_positions, end_pos, lines))
+    return (
+         find_steps_between_points([start_pos], end_pos, lines),
+         find_steps_between_points(a_positions, end_pos, lines),
+    )
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

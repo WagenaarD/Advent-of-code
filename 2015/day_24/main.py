@@ -49,6 +49,5 @@ def main(input_txt: str) -> tuple[int, int]:
         solve(input_txt, 3), 
         solve(input_txt, 4),
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

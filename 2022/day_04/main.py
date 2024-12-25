@@ -5,7 +5,13 @@ Advent of code challenge 2022
 __project__   = 'Advent of code 2022'
 __author__    = 'D W'
 
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
+
+AOC_ANSWER = (431, 823)
 
 
 # def line_contains(line: str) -> bool:
@@ -38,10 +44,23 @@ import re
 #     print('Part 1 result: {}'.format([line_contains(line) for line in input_lines].count(True)))
 #     print('Part 2 result: {}'.format([line_has_overlap(line) for line in input_lines].count(True)))
 
-# Minimalistic approach
-input_lines = open('input.txt').read().split('\n')
-# num_list = [[int(match) for match in re.findall('[0-9]+', line)] for line in input_lines]
-num_list = [map(int, re.findall('[0-9]+', line)) for line in input_lines] # Suggestion LiquidFun
-set_list = [(set(range(num[0], num[1] + 1)), set(range(num[2], num[3] + 1))) for num in num_list]
-print('Part 1:', [pair[0] >= pair[1] or pair[0] <= pair[1] for pair in set_list].count(True))
-print('Part 2:', [bool(pair[0] & pair[1]) for pair in set_list].count(True))
+# # Minimalistic approach
+# input_lines = open('input.txt').read().split('\n')
+# # num_list = [[int(match) for match in re.findall('[0-9]+', line)] for line in input_lines]
+# num_list = [map(int, re.findall('[0-9]+', line)) for line in input_lines] # Suggestion LiquidFun
+# set_list = [(set(range(num[0], num[1] + 1)), set(range(num[2], num[3] + 1))) for num in num_list]
+# print('Part 1:', [pair[0] >= pair[1] or pair[0] <= pair[1] for pair in set_list].count(True))
+# print('Part 2:', [bool(pair[0] & pair[1]) for pair in set_list].count(True))
+
+
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    input_lines = input_txt.split('\n')
+    # num_list = [[int(match) for match in re.findall('[0-9]+', line)] for line in input_lines]
+    num_list = [list(map(int, re.findall('[0-9]+', line))) for line in input_lines] # Suggestion LiquidFun
+    set_list = [(set(range(num[0], num[1] + 1)), set(range(num[2], num[3] + 1))) for num in num_list]
+    p1 = [pair[0] >= pair[1] or pair[0] <= pair[1] for pair in set_list].count(True)
+    p2 = [bool(pair[0] & pair[1]) for pair in set_list].count(True)
+    return p1, p2
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)

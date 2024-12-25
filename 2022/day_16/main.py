@@ -8,13 +8,15 @@ Cleanup -
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
 from functools import cache
 
+AOC_ANSWER = (1923, 2594)
 
-def valve_path(source: str, target: str, d: int = 0) -> list:
+def valve_path(source: str, target: str, valves, d: int = 0) -> list:
     """
     Returns a shortest path between the source and the target. 
 
@@ -38,29 +40,32 @@ def valve_path(source: str, target: str, d: int = 0) -> list:
                 if valve not in source_keys:
                     source_keys.append(valve)
                     if valve in target_keys:
-                        return valve_path(source, valve, d+1)[:-1] + valve_path(valve, target, d+1)
+                        return valve_path(source, valve, valves, d+1)[:-1] + valve_path(valve, target, valves, d+1)
         for key in target_keys[:]:
             for valve in valves[key][1]:
                 if valve not in target_keys:
                     target_keys.append(valve)
                     if valve in source_keys:
-                        return valve_path(source, valve, d+1)[:-1] + valve_path(valve, target, d+1)
+                        return valve_path(source, valve, valves, d+1)[:-1] + valve_path(valve, target, valves, d+1)
 
-@cache
-def valve_distance(source: str, target: str) -> int:
+C = {}
+def valve_distance(source: str, target: str, valves) -> int:
     """Cached wrapper to speed up function calls"""
-    return len(valve_path(source, target)) - 1
+    if (source, target) not in C:
+        C[(source, target)] = len(valve_path(source, target, valves)) - 1
+    return C[(source, target)]
 
 
-def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
+def max_release(keys: list, valves, node = 'AA', t = 0, duo = False, t_max = 30):
     if (''.join(keys), node, t, duo, t_max) in max_release.cache:
         return max_release.cache[(''.join(keys), node, t, duo, t_max)]
     flow = [0]
     for key_idx, key in enumerate(keys):
-        delta_t = valve_distance(node, key) + 1
+        delta_t = valve_distance(node, key, valves) + 1
         if t + delta_t <= t_max:
             flow.append(max_release(
                 keys = keys[:key_idx] + keys[key_idx + 1:],
+                valves = valves,
                 node = key,
                 t = t + delta_t,
                 duo = duo,
@@ -70,6 +75,7 @@ def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
     if duo:
         flow.append(max_release(
             keys = keys,
+            valves = valves,
             node = 'AA',
             t = 0,
             duo = False, 
@@ -81,20 +87,18 @@ def max_release(keys: list, node = 'AA', t = 0, duo = False, t_max = 30):
 max_release.cache = {}
 
 
-@print_function(run_time = True)
-def solve_part_1():
-    return max_release(non_zero_valve_keys, t_max = 30, duo = False)
+@print_function
+def solve_part_1(non_zero_valve_keys, valves):
+    return max_release(non_zero_valve_keys, valves, t_max = 30, duo = False)
+
+@print_function
+def solve_part_2(non_zero_valve_keys, valves):
+    return max_release(non_zero_valve_keys, valves, t_max = 26, duo = True)
 
 
-@print_function(run_time = True)
-def solve_part_2():
-    return max_release(non_zero_valve_keys, t_max = 26, duo = True)
-
-
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-
-    lines = sys.stdin.read().strip().split('\n')
+@print_function
+def main(input_txt: str) -> tuple[int, int]:    
+    lines = input_txt.split('\n')
 
     # Process input
     valves = {}
@@ -105,8 +109,9 @@ if __name__ == '__main__':
         )
     non_zero_valve_keys = [key for key, value in valves.items() if value[0] > 0]
     
-    # Start solving
-    solve_part_1()
-    solve_part_2()
+    return (
+        solve_part_1(non_zero_valve_keys, valves),
+        solve_part_2(non_zero_valve_keys, valves),
+    )
 
-
+aoc_run(__name__, __file__, main, AOC_ANSWER)

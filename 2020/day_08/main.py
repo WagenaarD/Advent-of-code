@@ -52,7 +52,4 @@ def main(input_txt: str) -> tuple[int, int]:
             break
     return (p1, p2)
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER)
-
-

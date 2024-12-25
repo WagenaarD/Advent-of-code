@@ -58,6 +58,7 @@ def main(input: str) -> tuple[int, int]:
         sum(is_nice_part_1(line) for line in lines), 
         sum(is_nice_part_2(line) for line in lines)
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+
+aoc_run( __name__, __file__, main, AOC_ANSWER, 'in')
 
 

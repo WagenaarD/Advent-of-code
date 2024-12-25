@@ -81,6 +81,5 @@ def main(input_txt: str) -> tuple[int, int]:
         solve(input_txt, 0, 100),
         solve(input_txt, PART_2_INCREMENT, None),
     )
-aoc_run(__name__, __file__, main, AOC_ANSWER)
 
-
+aoc_run( __name__, __file__, main, AOC_ANSWER)

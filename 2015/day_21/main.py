@@ -84,7 +84,4 @@ def main(input_txt: str) -> tuple[int, int]:
                         lowest_cost = gold_spent
     return lowest_cost, highest_cost
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER)
-
-

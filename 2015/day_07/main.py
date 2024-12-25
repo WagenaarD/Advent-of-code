@@ -61,6 +61,7 @@ def main(input: str) -> tuple[int, int]:
     return p1, p2
     
     
-aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
+
+aoc_run( __name__, __file__, main, AOC_ANSWER, 'in')
 
 

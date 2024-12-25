@@ -57,5 +57,3 @@ def main(input: str) -> tuple[int, int]:
     return len(antinodes_p1), len(antinodes_p2)
 
 aoc_run(__name__, __file__, main, AOC_ANSWER)
-
-

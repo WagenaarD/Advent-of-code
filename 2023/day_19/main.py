@@ -116,7 +116,6 @@ def main(input: str) -> tuple[int, int]:
         wfs[name] = rules
     return (part_one(wfs, input_p2.split('\n')), part_two(wfs))
 
-
 aoc_run(__name__, __file__, main, AOC_ANSWER, 'in')
 # aoc_run(__name__, __file__, main, AOC_ANSWER, 'ex')
 

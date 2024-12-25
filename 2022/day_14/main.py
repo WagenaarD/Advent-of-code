@@ -18,9 +18,12 @@ and 2 respectively.
 """
 
 import sys
-sys.path.insert(0, '/'.join(__file__.replace('\\\\', '/').split('/')[:-2]))
-from _utils.print_function import print_function
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
 import re
+
+AOC_ANSWER = (795, 30214)
 
 
 def visualize_grid(rocks: set, sand: set = set()) -> None:
@@ -71,17 +74,16 @@ def solve(rocks: set, y_max: int, floor: bool) -> int:
         if next_pos == None:
             break
         taken.add(next_pos)
-    if len(taken) < 2000:
+    if len(taken) < 1000:
         visualize_grid(rocks, taken)
 
     return len(taken) - len(rocks)
 
 
-if __name__ == '__main__':
-    """Executed if file is executed but not if file is imported."""
-    
+@print_function
+def main(input_txt: str) -> tuple[int, int]:    
     # Start script
-    lines = sys.stdin.read().strip().split('\n')
+    lines = input_txt.split('\n')
 
     # Find rock positions
     rocks = set()
@@ -91,9 +93,13 @@ if __name__ == '__main__':
             dir = (min(1, max(-1, xe - xs)), min(1, max(-1, ye - ys)))
             for idx in range(max(abs(xe - xs), abs(ys - ye)) + 1):
                 rocks.add((xs + dir[0] * idx, ys + dir[1] * idx))
-    visualize_grid(rocks)
+    # visualize_grid(rocks)
     y_max = max([pair[1] for pair in rocks])
 
     # Calculate result
-    print('Part 1:', solve(rocks, y_max, False))
-    print('Part 2:', solve(rocks, y_max + 1, True))
+    return(
+        solve(rocks, y_max, False),
+        solve(rocks, y_max + 1, True)
+    )
+
+aoc_run(__name__, __file__, main, AOC_ANSWER)
