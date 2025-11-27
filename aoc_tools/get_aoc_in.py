@@ -12,8 +12,8 @@ Original idea was based on a bash script:
  - https://www.reddit.com/r/adventofcode/comments/e32v5b/need_help_with_input_download_script_bash/
  - https://github.com/Janiczek/advent-of-code/blob/master/start.sh#L8-L11
 
-Example of aoc_session_cookie.json:
-""
+aoc_session_cookie is an extensions-less file containing only a 128 character ASCII string
+
 How to find the cookie
 - Open adventofcode.com in Google Chrome
 - Login
@@ -34,11 +34,16 @@ from pathlib import Path
 
 # Get cookie
 SCRIPT_PATH = Path(__file__).parent
-with open(SCRIPT_PATH / 'aoc_session_cookie') as f:
+COOKIE_PLACEHOLDER = 'x' * 128
+COOKIE_PATH = SCRIPT_PATH / 'aoc_session_cookie'
+if not COOKIE_PATH.exists():
+    with open(COOKIE_PATH, 'w') as f:
+        f.write(COOKIE_PLACEHOLDER)
+with open(COOKIE_PATH) as f:
     COOKIE = f.read()
 URL = 'https://adventofcode.com/{}/day/{}'
 
-def get_aoc_in(path: Path = None):
+def get_aoc_in(path: Path = None, print_in = True):
     if path == None:
         path = Path(os.getcwd())
 
@@ -61,8 +66,9 @@ def get_aoc_in(path: Path = None):
         content = content [:-1]
 
     # Write the output
-    print(content)
-    print(URL.format(year, day_no_zero))
+    if print_in:
+        print(content)
+        print(URL.format(year, day_no_zero))
     with open(path / 'in', 'w') as f:
         f.write(content)
 
