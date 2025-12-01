@@ -14,6 +14,7 @@ the older problems.
 #### 2022: 50 ⭐ (Jungle)
 #### 2023: 50 ⭐ (Snow)
 #### 2024: 50 ⭐ (History)
+#### 2025: 2 ⭐
 
 ## Links:
 - [adventofcode.com](https://adventofcode.com/)
