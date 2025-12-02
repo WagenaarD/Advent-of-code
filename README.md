@@ -14,8 +14,8 @@ the older problems.
 #### 2022: 50 ⭐ (Jungle)
 #### 2023: 50 ⭐ (Snow)
 #### 2024: 50 ⭐ (History)
-Note: Starting in 2025, the number of stars was reduced from 50 to 24 per year.
-#### 2025: 2 ⭐
+Starting in 2025, the number of stars was reduced from 50 to 24 per year.
+#### 2025: 4 ⭐
 
 ## Links:
 - [adventofcode.com](https://adventofcode.com/)
