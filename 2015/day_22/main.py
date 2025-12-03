@@ -38,12 +38,20 @@ MOVE_COSTS = {
 
 
 def wizard_battle(input_txt: str, is_hard: bool = False) -> int:
-    initial_player_hp, initial_player_mp, initial_boss_hp, boss_damage = map(int, re.findall('\\d+', input_txt))
+    input_data = tuple(map(int, re.findall('\\d+', input_txt)))
+    if len(input_data) == 2:
+        # real input
+        debug = False
+        initial_boss_hp, boss_damage = map(int, re.findall('\\d+', input_txt))
+        initial_player_hp, initial_player_mp = 50, 500
+    else:
+        # example input
+        debug = True
+        initial_player_hp, initial_player_mp, initial_boss_hp, boss_damage = map(int, re.findall('\\d+', input_txt))
     state = (initial_player_hp+boss_damage, initial_boss_hp, 0, initial_player_mp, 0, 0, 0, [])
     qeue = deque([state])
     lowest_cost = math.inf
     best_log = []
-    debug = initial_player_hp == 10
     while qeue:
         player_hp, boss_hp, mp_spent, mp, shield_turns, poison_turns, recharge_turns, log = qeue.pop()
         
