@@ -34,13 +34,16 @@ def part_one(input_txt: str) -> int:
 @print_function
 def solve(input_txt: str, length: int) -> int:
     """
-    More general case of the solution shown in part_one.
+    More general case of the solution shown in part_one. The output definition, appending and 
+    joltage adding (indicated by ## below) can all be replaced by adding to joltage directly using:
+        joltage += next_val * (10**idx)
+    However, this may be less clear and is not really faster
     """
     lines = input_txt.split('\n')
     joltage = 0
     for line in lines:
         values = list(map(int, line))
-        output = []
+        output = [] ##
         for idx in reversed(range(length)):
             if idx == 0:
                 next_val = max(values)
@@ -48,11 +51,9 @@ def solve(input_txt: str, length: int) -> int:
                 next_val = max(values[:-idx])
             val_pos = values.index(next_val)
             values = values[val_pos+1:]
-            # This would also work, but maybe its less clear. It can replace the output lines
-            # To my surprise it is not really fastr
-            #     joltage += next_val * (10**idx)
-            output.append(next_val)
-        joltage += int(''.join(str(char) for char in output))
+            # joltage += next_val * (10**idx)
+            output.append(next_val) ##
+        joltage += int(''.join(str(char) for char in output)) ##
     return joltage
 
     
