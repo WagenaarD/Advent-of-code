@@ -50,7 +50,7 @@ class Tile:
                             for c in range(len(self.lines[0]))]
         self.__update()
     
-    def aligns(self, other: Tile) -> None | tuple[int, int]:
+    def aligns(self, other: 'Tile') -> None | tuple[int, int]:
         """Returns the axis (if any) along which this tile aligns with another tile"""
         for idx in range(4):
             if self.edges[idx] == other.edges[(idx + 2) % 4][::-1]:
