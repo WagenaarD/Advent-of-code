@@ -10,11 +10,12 @@ I started doing advent of code in 2022 and merged all progress into a single git
 |2018|-|Anomolies|
 |2019|-|Space|
 |2020|50|Vacation|
-|2021|-|Deep sea|
+|2021|8|Deep sea|
 |2022|50|Jungle|
 |2023|50|Snow|
 |2024|50|History|
 |2025*|8|Decorations|
+
 *: In 2025, the elves learned project management. Their new efficiency reduced the number of required stars per year from 50 to 24.
 
 ## Links:

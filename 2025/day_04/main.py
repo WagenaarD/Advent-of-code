@@ -14,6 +14,16 @@ from collections import defaultdict
 AOC_ANSWER = (1393, 8643)
 
 
+# ChatGPT improvement: 
+# - By taking it.product out of the loop, we reduce runtime frmo 0.27s to 0.22s
+# - Since NEIGHBOURS_2D is precomputed, we can now also exclude drow==dcol==0, further reducing 
+# runtime just below 0.20s
+NEIGHBOURS_2D = [
+    (drow, dcol) for drow, dcol in it.product((-1, 0, 1), repeat=2)
+    if not (drow == dcol == 0)
+]
+
+
 @print_function
 def main(input_txt: str) -> int:
     # Store input as a list of coordinates. Coordinates stored in (row, column) format
@@ -23,7 +33,7 @@ def main(input_txt: str) -> int:
         for col, char in enumerate(line):
             if char == '@':
                 rolls.append((row, col))
-    
+    # Keep removing rolls untill none can be removed. After the first round, remember the score (p1)
     score_p1 = None
     number_of_rolls_at_start = len(rolls)
     old_len = number_of_rolls_at_start + 1
@@ -32,10 +42,9 @@ def main(input_txt: str) -> int:
         # neighbour_count of surrounding positions (even if they contain no roll)
         neighbours = defaultdict(int)
         for row, col in rolls:
-            for drow, dcol in it.product((-1, 0, 1), repeat=2):
+            for drow, dcol in NEIGHBOURS_2D:
                 npos = (row + drow, col + dcol)
                 neighbours[npos] += 1
-            neighbours[(row, col)] -= 1
         # After the first round, score the number of rolls removed
         if score_p1 is None:
             score_p1 = sum(1 for pos in rolls if neighbours[pos] < 4)
