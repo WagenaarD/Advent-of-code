@@ -41,13 +41,13 @@ def print_loop(generator, max_idx = None, period_in_seconds: float = 5.0):
     last_t = t_0
     print(f'Loop: Started ({max_idx} iterations)')
     while True:
+        t = datetime.datetime.now()
         try:
             yield next(generator)
         except StopIteration as err:
-            print(f'Loop: Completed')
+            print(f'Loop: Completed in {t-t_0}')
             return
         idx += 1
-        t = datetime.datetime.now()
         message = f'Loop: {idx:5}/{max_idx}, time remaining: {(t - t_0) / idx * (max_idx - idx)}'
         if RAYSTATION:
             connect.set_progress(message, idx/max_idx*100.0)
