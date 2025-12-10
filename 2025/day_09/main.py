@@ -13,7 +13,6 @@ from collections import defaultdict
 
 
 AOC_ANSWER = (4759531084, 1539238860)
-                        # 3065116950
 
 
 @print_function
