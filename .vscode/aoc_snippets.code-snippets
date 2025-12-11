@@ -80,8 +80,41 @@
             "                dist[npos] = ncost",
             "                heapq.heappush(qeue, (ncost, npos, path))",
             "    return dist",
-        ]
-    },    
+        ],
+    },
+
+    "union find": {
+        "prefix": "Union Find",
+        "body": [
+            "",
+            "class UnionFind:",
+            "    \"\"\"Union find algorithm for tracking connected groups.\"\"\"",
+            "    def __init__(self, objects: list):",
+            "        \"\"\"Objects can any list of hashable objects.\"\"\"",
+            "        self.parent = {obj: obj for obj in objects}",
+            "        \"\"\"Dictionary storing an object's parent. If the parent is itself, there is no parent\"\"\"",
+            "        # self.no_groups = len(set(objects))",
+            "        # \"\"\"Optional, tracks the number of unique groups. Needs to be uncommented from mix()\"\"\"",
+            "    ",
+            "    def find(self, object):",
+            "        \"\"\"Finds the parent of the object. If the parent is multiple steps away, store the parent of ",
+            "        the parent\"\"\"",
+            "        if self.parent[object] == object:",
+            "            return object",
+            "        else:",
+            "            self.parent[object] = self.find(self.parent[object])",
+            "            return self.parent[object]",
+            "    ",
+            "    def mix(self, child, parent):",
+            "        \"\"\"",
+            "        Combine two objects by setting the parent of an object to the parent of another object",
+            "        \"\"\"",
+            "        # if self.find(child) != self.find(parent):",
+            "        #     self.no_groups -= 1",
+            "        self.parent[self.find(child)] = self.find(parent)"
+        ]   
+    },  
+
     "transpose list": {
         "prefix": "Transpose list",
         "body": "transposed_list = list(zip(*old_list))",

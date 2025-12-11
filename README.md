@@ -1,7 +1,7 @@
 # Advent of code
-I started doing advent of code in 2022 and merged all progress into a single github. I generally try to write solutions which strike a balance between fast, readable and concise. I might go back and do the older problems. 
+I started doing advent of code in 2022 and merged all progress into a single github. I write in Python and generally try to strike a balance between fast, readable and concise. I've later gone back to do some older problems. 
 
-## Solutions by year (Python)
+## Solutions by year
 |Year|Stars⭐|Theme|
 |--|--|--|
 |2015|50|Christmas|
@@ -14,7 +14,7 @@ I started doing advent of code in 2022 and merged all progress into a single git
 |2022|50|Jungle|
 |2023|50|Snow|
 |2024|50|History|
-|2025*|18|Decorations|
+|2025*|22|Decorations|
 
 *: In 2025, the elves learned project management. Their new efficiency reduced the number of required stars per year from 50 to 24.
 

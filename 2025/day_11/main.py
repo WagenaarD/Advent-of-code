@@ -29,7 +29,7 @@ class PathFinder:
         score = 0
         for dest in self.machine_outputs[start]:
             if dest == end:
-                score +=1 
+                score +=1
             else:
                 score += self(dest, end)
         return score

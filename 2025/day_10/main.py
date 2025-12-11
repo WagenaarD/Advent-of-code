@@ -24,7 +24,6 @@ def part_one(input_txt: str) -> int:
         diagram = parts[0][1:-1]
         diagram = tuple(char == '#' for char in diagram)
         buttons = [list(map(int, part[1:-1].split(','))) for part in parts[1:-1]]
-        # joltage = tuple(map(int, parts[-1][1:-1].split(',')))
         # Broad-first-search (BFS) over which buttons to press untill we find one leading to the 
         # correct machine settings
         start = (False, ) * len(diagram)
@@ -102,5 +101,5 @@ def main(input_txt: str) -> tuple[int, int]:
         part_two(input_txt)
     )
 
-aoc_run( __name__, __file__, main, (7, 33), 'ex')
+# aoc_run( __name__, __file__, main, (7, 33), 'ex')
 aoc_run( __name__, __file__, main, AOC_ANSWER)
