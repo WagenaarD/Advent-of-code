@@ -1,0 +1,63 @@
+"""
+Advent of code challenge
+To run code, copy to terminal (MacOS):
+python3 main.py < in
+"""
+
+import sys
+from pathlib import Path
+sys.path.append(str(AOC_BASE_PATH := Path(__file__).parents[2]))
+from aoc_tools import print_function, aoc_run
+from aoc_tools import print_loop, tuple_add, tuple_sub, tuple_mult, Pos
+import itertools as it
+from dataclasses import dataclass, field
+from collections import defaultdict, deque, Counter
+import re
+import numpy as np
+from pprint import pprint
+from functools import cache, reduce
+import math
+from pprint import pprint
+import heapq
+
+AOC_ANSWER = (492, None)
+
+
+@print_function
+def part_one(input_txt: str) -> int:
+    """
+    Might be the ugliest solution I've ever written. Does not even work on example. but does work on
+    input. I had no idea how to solve today as the numbers are quite large and any brute force 
+    approach would take way too long. Instead, I tried to see how many regions were even possible
+    simply by checking if they have enough open spaces (width * length) to acoomodate all the #'s. 
+    It turns out this is already the right answer.
+    """
+    # Parse input
+    *shapes_txt, regions_txt = input_txt.split('\n\n')
+    # shapes = {}
+    shape_area = {}
+    for shape_txt in shapes_txt:
+        name, *lines = shape_txt.split('\n')
+        name_int = int(name[:1])
+        # shapes[name_int] = lines
+        shape_area[name_int] = sum(line.count('#') for line in lines)
+    # Count all shapes for which the total area >= total shape area
+    score_p1 = 0
+    for region_txt in regions_txt.split('\n'):
+        start, end = region_txt.split(': ')
+        total_area = math.prod(map(int, re.findall('\\d+', start)))
+        total_shape_area = sum(
+            cnt * shape_area[idx] for idx, cnt in enumerate(map(int, end.split()))
+        )
+        score_p1 += total_area >= total_shape_area
+    return score_p1
+
+@print_function
+def main(input_txt: str) -> tuple[int, int]:
+    return (
+        part_one(input_txt), 
+        None,
+    )
+
+# aoc_run( __name__, __file__, main, AOC_ANSWER, 'ex')
+aoc_run( __name__, __file__, main, AOC_ANSWER)
